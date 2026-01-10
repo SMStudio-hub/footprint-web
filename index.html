@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foot Print 👣🐾 | Premium Footwear Collection</title>
+    <style>
+        :root {
+            --wa-green: #25D366;
+            --brand-dark: #1a1a1a;
+            --accent: #ff4757;
+            --gold: #f1c40f;
+            --offer-bg: #eb4d4b;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            background-color: var(--light-bg);
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        /* Full Screen Promo Banner */
+        .promo-banner {
+            background: var(--offer-bg);
+            color: white;
+            text-align: center;
+            padding: 12px 0;
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header {
+            background: var(--brand-dark);
+            color: #fff;
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--wa-green);
+        }
+
+        .logo-text {
+            font-size: clamp(2.5rem, 8vw, 4.5rem); /* Dynamic resizing */
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin-top: 10px;
+        }
+
+        .container {
+            max-width: 1400px; /* Wider for full screen feel */
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 60px 0 40px;
+            font-size: 2.5rem;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: var(--wa-green);
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Product Grid Optimized */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        /* Image Zoom Control - Suggestion Implemented */
+        .img-container {
+            width: 100%;
+            height: 300px;
+            padding: 20px;
+            box-sizing: border-box;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Important for zoom effect */
+        }
+
+        .img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.6s ease; /* Suggestion: Smooth zoom */
+        }
+
+        .product-card:hover .img-container img {
+            transform: scale(1.15); /* Suggestion: Zoom on hover */
+        }
+
+        .price-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+            z-index: 2;
+        }
+
+        .details {
+            padding: 25px;
+            text-align: center;
+            flex-grow: 1;
+            background: white;
+        }
+
+        .details h3 {
+            margin: 0 0 12px;
+            font-size: 1.4rem;
+            color: var(--brand-dark);
+        }
+
+        .details p {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* Button Enhancement */
+        .btn-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--wa-green);
+            color: white;
+            text-decoration: none;
+            padding: 16px;
+            border-radius: 15px;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+        }
+
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        /* FAQ & Table styling */
+        .size-container, .faq-section {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            margin: 60px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1.1rem;
+        }
+
+        th { background: #fdfdfd; padding: 20px; border-bottom: 3px solid var(--wa-green); }
+        td { padding: 20px; border-bottom: 1px solid #eee; text-align: center; }
+
+        /* Floating Button */
+        .floating-wa {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: var(--wa-green);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 30px rgba(37,211,102,0.5);
+            z-index: 2000;
+            text-decoration: none;
+            font-size: 35px;
+            transition: 0.3s;
+        }
+
+        .floating-wa:hover { transform: scale(1.1) rotate(10deg); }
+
+        footer {
+            background: var(--brand-dark);
+            color: #bbb;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .product-grid { grid-template-columns: 1fr; }
+            .logo-text { font-size: 2.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="promo-banner">🎉 MEGA FESTIVAL SALE: BUY 2 GET 10% OFF | FREE SHIPPING 👣</div>
+
+<a href="https://wa.me/919876543210" class="floating-wa" title="Chat with us">💬</a>
+
+<header>
+    <h1 class="logo-text">Foot Print 👣🐾</h1>
+    <p class="tagline">QUALITY • COMFORT • STYLE</p>
+</header>
+
+<div class="container">
+    <h2>Trending Collection</h2>
+    
+    <div class="product-grid">
+        <div class="product-card">
+            <div class="price-badge">₹199</div>
+            <div class="img-container">
+                <img src="project 1/1000071875.jpg" alt="Stout Art-G124" onerror="this.src='https://via.placeholder.com/300x300?text=Footwear+Image'" loading="lazy">
+            </div>
+            <div class="details">
+                <h3>Stout Art-G124</h3>
+                <p>Premium Blue Scenery comfort flip-flops for all-day wear.</p>
+                <a href="https://wa.me/919876543210?text=Hi Boss! I want to order Stout Art-G124" class="btn-whatsapp">Order via WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="price-badge">₹249</div>
+            <div class="img-container">
+                <img src="project 1/1000071888.jpg" alt="Rose Floral" onerror="this.src='https://via.placeholder.com/300x300?text=Footwear+Image'" loading="lazy">
+            </div>
+            <div class="details">
+                <h3>Rose Floral</h3>
+                <p>Elegant floral prints combined with ultra-soft cushion sole.</p>
+                <a href="https://wa.me/919876543210?text=Hi Boss! I want to order Rose Floral" class="btn-whatsapp">Order via WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="price-badge">₹299</div>
+            <div class="img-container">
+                <img src="project 1/1000071908.jpg" alt="Hindalite Prime" onerror="this.src='https://via.placeholder.com/300x300?text=Footwear+Image'" loading="lazy">
+            </div>
+            <div class="details">
+                <h3>Hindalite Prime</h3>
+                <p>Maximum durability with classic checkered design.</p>
+                <a href="https://wa.me/919876543210?text=Hi Boss! I want to order Hindalite Prime" class="btn-whatsapp">Order via WhatsApp</a>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="price-badge">₹199</div>
+            <div class="img-container">
+                <img src="project 1/1000071740.png" alt="Color Splash" onerror="this.src='https://via.placeholder.com/300x300?text=Footwear+Image'" loading="lazy">
+            </div>
+            <div class="details">
+                <h3>Color Splash</h3>
+                <p>Express yourself with our artistic modern designer range.</p>
+                <a href="https://wa.me/919876543210?text=Hi Boss! I want to order Color Splash" class="btn-whatsapp">Order via WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <h2>Size Guide 📏</h2>
+    <div class="size-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>UK / India Size</th>
+                    <th>Foot Length (cm)</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>6</td><td>25.1 cm</td><td>Adult</td></tr>
+                <tr><td>7</td><td>25.7 cm</td><td>Adult</td></tr>
+                <tr><td>8</td><td>26.3 cm</td><td>Adult</td></tr>
+                <tr><td>9</td><td>27.0 cm</td><td>Adult</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <section class="faq-section">
+        <h2>Help & Support</h2>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <h4>✅ How do I place an order?</h4>
+                <p>Bas 'Order via WhatsApp' button pe click karein aur apna size aur address message kar dein.</p>
+            </div>
+            <div class="faq-item">
+                <h4>💳 Payment Methods?</h4>
+                <p>Hum Google Pay, PhonePe aur Cash on Delivery (COD) dono accept karte hain.</p>
+            </div>
+            <div class="faq-item">
+                <h4>🚚 Delivery Time?</h4>
+                <p>Aapka order 3-5 working days ke andar deliver ho jayega.</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <h3 style="color:var(--wa-green); margin-bottom:10px;">FOR BULK / WHOLESALE INQUIRIES</h3>
+    <p>Contact us for special B2B pricing and custom designs.</p>
+    <br>
+    <p><strong>Foot Print 👣🐾 Premium Footwear</strong></p>
+    <p>WhatsApp: +91 98765 43210 | Email: shop@footprint.com</p>
+    <p style="font-size: 0.8rem; margin-top: 40px;">&copy; 2026 Foot Print Footwear. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
