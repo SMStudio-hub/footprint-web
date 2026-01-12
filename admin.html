@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FootPrint Admin - Online</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial; background: #f6f7fb; margin: 0; padding: 20px; }
+        .box { max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,.1); }
+        h2 { text-align: center; color: #333; }
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ccc; font-size: 1rem; box-sizing: border-box; }
+        button { background: #25D366; color: #fff; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #1da851; }
+        .list-container { margin-top: 30px; }
+        .item { display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #25D366; }
+        .item span { font-weight: bold; color: #444; }
+        .del { background: #ff4757; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; }
+        .status { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🛠 FootPrint Admin</h2>
+    <p class="status">Connected to Google Firebase 🔥</p>
+    
+    <input type="text" id="name" placeholder="Product Name (e.g. Nike Air)">
+    <input type="number" id="price" placeholder="Price in ₹">
+    <input type="text" id="img" placeholder="Image URL (e.g. photo/1.png)">
+    <select id="cat">
+        <option value="Men">Men</option>
+        <option value="Women">Women</option>
+    </select>
+    <button id="addBtn">➕ Add Product Online</button>
+
+    <div class="list-container" id="list">
+        <p style="text-align:center;">Loading products...</p>
+    </div>
+</div>
+
+<script type="module">
+    // 1. Firebase SDK Import karein
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // 2. Aapka Firebase Config (Jo aapne screenshot mein dikhaya tha)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6...", // Apna pura key yahan paste karein
+        authDomain: "footprint-shop.firebaseapp.com",
+        projectId: "footprint-shop",
+        storageBucket: "footprint-shop.firebasestorage.app",
+        messagingSenderId: "16952304600",
+        appId: "1:16952304600:web:7c8498522..."
+    };
+
+    // 3. Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const colRef = collection(db, "products");
+
+    // 4. Elements pakdein
+    const nameEl = document.getElementById("name");
+    const priceEl = document.getElementById("price");
+    const imgEl = document.getElementById("img");
+    const catEl = document.getElementById("cat");
+    const listEl = document.getElementById("list");
+    const addBtn = document.getElementById("addBtn");
+
+    // 5. Product Add Karne ka Function
+    addBtn.addEventListener("click", async () => {
+        const name = nameEl.value;
+        const price = priceEl.value;
+        const img = imgEl.value;
+        const cat = catEl.value;
+
+        if(!name || !price || !img) {
+            alert("Boss, saari details bhariye!");
+            return;
+        }
+
+        try {
+            await addDoc(colRef, { name, price, img, cat, date: Date.now() });
+            nameEl.value = priceEl.value = imgEl.value = ""; // Form khali karein
+            alert("Success! Product online save ho gaya.");
+        } catch (e) {
+            alert("Error: " + e.message);
+        }
+    });
+
+    // 6. Real-time Data Display (Database se data nikalna)
+    onSnapshot(colRef, (snapshot) => {
+        listEl.innerHTML = "<h3>Live Inventory</h3>";
+        snapshot.forEach((productDoc) => {
+            const p = productDoc.data();
+            const id = productDoc.id;
+            listEl.innerHTML += `
+                <div class="item">
+                    <span>${p.name} - ₹${p.price} (${p.cat})</span>
+                    <button class="del" onclick="deleteItem('${id}')">Delete</button>
+                </div>
+            `;
+        });
+    });
+
+    // 7. Delete Function (Global window object mein daalna padta hai module ke liye)
+    window.deleteItem = async (id) => {
+        if(confirm("Kya aap ise delete karna chahte hain?")) {
+            await deleteDoc(doc(db, "products", id));
+        }
+    };
+
+</script>
+</body>
+</html>
