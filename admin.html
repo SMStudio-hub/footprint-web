@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FootPrint Admin | Manage Store</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; }
+        .add-btn { background: #28a745; color: white; }
+        .edit-btn { background: #ffc107; color: black; margin-right: 5px; }
+        .del-btn { background: #dc3545; color: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #f8f9fa; }
+        img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2 id="formTitle">Add New Product</h2>
+    <input type="hidden" id="productId">
+    <input type="text" id="name" placeholder="Shoe Name">
+    <input type="number" id="price" placeholder="Price (Rs.)">
+    <input type="text" id="img" placeholder="Image URL (.jpg / .png)">
+    <button id="mainBtn" class="add-btn" onclick="saveProduct()">ADD PRODUCT</button>
+    <button id="cancelBtn" style="display:none;" onclick="resetForm()">CANCEL</button>
+</div>
+
+<div class="box">
+    <h2>Current Inventory</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="inventoryBody"></tbody>
+    </table>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6...", 
+        authDomain: "footprint-shop.firebaseapp.com",
+        projectId: "footprint-shop",
+        storageBucket: "footprint-shop.firebasestorage.app",
+        messagingSenderId: "16952304600",
+        appId: "1:16952304600:web:7c8498522..."
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const colRef = collection(db, "products");
+
+    // Load Products in Table
+    const q = query(colRef, orderBy("date", "desc"));
+    onSnapshot(q, (snapshot) => {
+        const tbody = document.getElementById("inventoryBody");
+        tbody.innerHTML = "";
+        snapshot.forEach((doc) => {
+            const p = doc.data();
+            tbody.innerHTML += `
+                <tr>
+                    <td><img src="${p.img}"></td>
+                    <td>${p.name}</td>
+                    <td>Rs. ${p.price}</td>
+                    <td>
+                        <button class="edit-btn" onclick="prepareEdit('${doc.id}', '${p.name}', '${p.price}', '${p.img}')">EDIT</button>
+                        <button class="del-btn" onclick="deleteProduct('${doc.id}')">DELETE</button>
+                    </td>
+                </tr>`;
+        });
+    });
+
+    // Save or Update Product
+    window.saveProduct = async () => {
+        const id = document.getElementById("productId").value;
+        const name = document.getElementById("name").value;
+        const price = document.getElementById("price").value;
+        const img = document.getElementById("img").value;
+
+        if(!name || !price || !img) return alert("Sari details bhariye Boss!");
+
+        if(id) {
+            // Update Existing
+            await updateDoc(doc(db, "products", id), { name, price, img });
+            alert("Product update ho gaya!");
+        } else {
+            // Add New
+            await addDoc(colRef, { name, price, img, date: serverTimestamp() });
+            alert("Naya product add ho gaya!");
+        }
+        resetForm();
+    };
+
+    // Prepare for Edit
+    window.prepareEdit = (id, name, price, img) => {
+        document.getElementById("productId").value = id;
+        document.getElementById("name").value = name;
+        document.getElementById("price").value = price;
+        document.getElementById("img").value = img;
+        
+        document.getElementById("formTitle").innerText = "Edit Product";
+        document.getElementById("mainBtn").innerText = "UPDATE PRODUCT";
+        document.getElementById("cancelBtn").style.display = "inline-block";
+    };
+
+    // Delete Product
+    window.deleteProduct = async (id) => {
+        if(confirm("Kya aap ise sach mein delete karna chahte hain?")) {
+            await deleteDoc(doc(db, "products", id));
+        }
+    };
+
+    window.resetForm = () => {
+        document.getElementById("productId").value = "";
+        document.getElementById("name").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("img").value = "";
+        document.getElementById("formTitle").innerText = "Add New Product";
+        document.getElementById("mainBtn").innerText = "ADD PRODUCT";
+        document.getElementById("cancelBtn").style.display = "none";
+    };
+</script>
+</body>
+</html>
