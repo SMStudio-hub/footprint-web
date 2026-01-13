@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FootPrint Pro | Shopping & Offers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --black: #1a1a1a; --gold: #d4af37; --white: #ffffff; --green: #25D366; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: #fff; overflow-x: hidden; }
+        
+        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 100; }
+        .cart-icon { position: relative; cursor: pointer; font-size: 1.5rem; }
+        #cartCount { position: absolute; top: -5px; right: -10px; background: #ff3b30; color: #fff; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; }
+
+        .banner { background: var(--black); color: var(--gold); text-align: center; padding: 8px; font-size: 0.7rem; letter-spacing: 2px; font-weight: bold; }
+
+        .container { padding: 15px; max-width: 1200px; margin: auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .card { border-radius: 12px; overflow: hidden; background: #fdfdfd; border: 1px solid #f0f0f0; display: flex; flex-direction: column; transition: 0.3s; }
+        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .card-body { padding: 12px; text-align: center; flex-grow: 1; }
+        .card-body h3 { font-size: 0.85rem; margin: 5px 0; color: #444; }
+        .card-body .price { font-weight: 700; color: #000; margin-bottom: 10px; }
+        
+        .add-btn { width: 100%; padding: 10px; background: #000; color: #fff; border: none; border-radius: 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
+
+        /* Cart Sidebar */
+        #cartDrawer { position: fixed; right: -100%; top: 0; width: 85%; max-width: 350px; height: 100%; background: #fff; box-shadow: -5px 0 25px rgba(0,0,0,0.15); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1001; padding: 20px; display: flex; flex-direction: column; }
+        #cartDrawer.active { right: 0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
+        .overlay.active { display: block; }
+
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        /* Coupon & Payment UI */
+        .coupon-sec { margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 8px; }
+        .coupon-sec input { width: 60%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+        .apply-btn { padding: 8px 12px; background: var(--black); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.7rem; }
+        
+        .checkout-btn { background: var(--green); color: white; padding: 15px; text-align: center; text-decoration: none; border-radius: 10px; font-weight: bold; display: block; margin-top: 15px; border: none; width: 100%; cursor: pointer; }
+        
+        .discount-text { color: var(--green); font-size: 0.8rem; display: none; margin-top: 5px; }
+        .empty-msg { text-align: center; padding: 50px 0; color: #999; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<div class="banner">PROMO CODE: **FIRST10** (10% OFF)</div>
+
+<header>
+    <h1 style="letter-spacing:3px; font-size: 1.2rem; margin:0">FOOTPRINT</h1>
+    <div class="cart-icon" onclick="toggleCart()">🛒 <span id="cartCount">0</span></div>
+</header>
+
+<div class="container">
+    <div id="productGrid" class="grid">
+        <div class="empty-msg">Syncing with database...</div>
+    </div>
+</div>
+
+<div class="overlay" onclick="toggleCart()"></div>
+<div id="cartDrawer">
+    <h2 style="display:flex; justify-content:space-between">Your Cart <span onclick="toggleCart()" style="cursor:pointer">✕</span></h2>
+    <div id="cartItems" style="flex-grow: 1; overflow-y: auto;"></div>
+    
+    <div class="coupon-sec">
+        <input type="text" id="couponInput" placeholder="Enter FIRST10">
+        <button class="apply-btn" onclick="applyCoupon()">APPLY</button>
+        <div id="discountMsg" class="discount-text">Coupon Applied! 10% Off</div>
+    </div>
+
+    <div style="border-top: 2px solid #eee; padding-top: 15px;">
+        <div style="display:flex; justify-content:space-between; font-size: 0.9rem; margin-bottom: 5px;">
+            <span>Subtotal:</span> <span>₹<span id="subtotal">0</span></span>
+        </div>
+        <div id="discountRow" style="display:none; justify-content:space-between; font-size: 0.9rem; color: var(--green); margin-bottom: 5px;">
+            <span>Discount:</span> <span>-₹<span id="discountAmt">0</span></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size: 1.2rem; margin-top: 10px;">
+            <span>Total:</span> <span>₹<span id="finalTotal">0</span></span>
+        </div>
+        <button class="checkout-btn" onclick="checkout()">PROCEED TO PAYMENT</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6...", 
+        authDomain: "footprint-shop.firebaseapp.com",
+        projectId: "footprint-shop",
+        storageBucket: "footprint-shop.firebasestorage.app",
+        messagingSenderId: "16952304600",
+        appId: "1:16952304600:web:7c8498522..."
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let cart = [];
+    let discountPercent = 0;
+
+    // Load Products
+    onSnapshot(collection(db, "products"), (snap) => {
+        const grid = document.getElementById("productGrid");
+        if(snap.empty) {
+            grid.innerHTML = "<div class='empty-msg'>No items found!</div>";
+            return;
+        }
+        grid.innerHTML = "";
+        snap.forEach(doc => {
+            const p = doc.data();
+            const productDiv = document.createElement('div');
+            productDiv.className = 'card';
+            productDiv.innerHTML = `
+                <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'">
+                <div class="card-body">
+                    <h3>${p.name}</h3>
+                    <div class="price">₹${p.price}</div>
+                    <button class="add-btn">ADD TO CART</button>
+                </div>`;
+            productDiv.querySelector('.add-btn').onclick = () => addToCart(p.name, p.price);
+            grid.appendChild(productDiv);
+        });
+    });
+
+    window.addToCart = (name, price) => {
+        cart.push({name, price});
+        updateCartUI();
+        toggleCart(true);
+    };
+
+    window.applyCoupon = () => {
+        const code = document.getElementById("couponInput").value;
+        if(code === "FIRST10") {
+            discountPercent = 10;
+            document.getElementById("discountMsg").style.display = "block";
+            document.getElementById("discountRow").style.display = "flex";
+            updateCartUI();
+        } else {
+            alert("Invalid Coupon Code Boss!");
+        }
+    };
+
+    function updateCartUI() {
+        document.getElementById("cartCount").innerText = cart.length;
+        const list = document.getElementById("cartItems");
+        let subtotal = 0;
+        list.innerHTML = cart.length === 0 ? "<p class='empty-msg'>Your cart is empty</p>" : "";
+        
+        cart.forEach(item => {
+            subtotal += parseInt(item.price);
+            list.innerHTML += `<div class="cart-item"><span>${item.name}</span><span>₹${item.price}</span></div>`;
+        });
+
+        let discountAmt = (subtotal * discountPercent) / 100;
+        let finalTotal = subtotal - discountAmt;
+
+        document.getElementById("subtotal").innerText = subtotal;
+        document.getElementById("discountAmt").innerText = discountAmt;
+        document.getElementById("finalTotal").innerText = finalTotal;
+    }
+
+    window.toggleCart = (forceOpen = false) => {
+        const drawer = document.getElementById("cartDrawer");
+        const overlay = document.querySelector(".overlay");
+        if(forceOpen) { drawer.classList.add("active"); overlay.classList.add("active"); }
+        else { drawer.classList.toggle("active"); overlay.classList.toggle("active"); }
+    };
+
+    window.checkout = () => {
+        if(cart.length === 0) return alert("Cart khali hai!");
+        const total = document.getElementById("finalTotal").innerText;
+        const items = cart.map(i => `• ${i.name}`).join("\n");
+        const waMsg = encodeURIComponent(`*ORDER CONFIRMATION*\n\n${items}\n\n*Total: ₹${total}*\n\nBoss, please send me your UPI QR for payment!`);
+        window.location.href = `https://wa.me/917003479789?text=${waMsg}`;
+    };
+</script>
+</body>
+</html>
