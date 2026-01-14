@@ -3,133 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FootPrint Admin | Manage Store</title>
+    <title>FootPrint Admin | Inventory Manager</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
         .box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; }
-        .add-btn { background: #28a745; color: white; }
-        .edit-btn { background: #ffc107; color: black; margin-right: 5px; }
-        .del-btn { background: #dc3545; color: white; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background: #f8f9fa; }
-        img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background: #222; color: white; font-weight: bold; cursor: pointer; border: none; }
+        button:hover { background: #444; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #eee; }
+        img { border-radius: 5px; object-fit: cover; }
+        .edit-btn { background: #3498db; width: auto; padding: 5px 10px; }
+        .del-btn { background: #e74c3c; width: auto; padding: 5px 10px; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2 id="formTitle">Add New Product</h2>
-    <input type="hidden" id="productId">
-    <input type="text" id="name" placeholder="Shoe Name">
+    <h2>Add/Edit Product</h2>
+    <input type="hidden" id="prodId">
+    <input type="text" id="name" placeholder="Shoe Name (e.g. Nike Air Max)">
     <input type="number" id="price" placeholder="Price (Rs.)">
-    <input type="text" id="img" placeholder="Image URL (.jpg / .png)">
-    <button id="mainBtn" class="add-btn" onclick="saveProduct()">ADD PRODUCT</button>
-    <button id="cancelBtn" style="display:none;" onclick="resetForm()">CANCEL</button>
+    <input type="text" id="img" placeholder="Image Link (URL)">
+    
+    <label>Category:</label>
+    <select id="category">
+        <option value="Sports">Sports</option>
+        <option value="Casual">Casual</option>
+        <option value="Formal">Formal</option>
+    </select>
+    
+    <button id="saveBtn">SAVE PRODUCT</button>
 </div>
 
 <div class="box">
-    <h2>Current Inventory</h2>
+    <h3>Current Inventory</h3>
     <table>
         <thead>
             <tr>
                 <th>Image</th>
-                <th>Name</th>
+                <th>Product</th>
+                <th>Category</th>
                 <th>Price</th>
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody id="inventoryBody"></tbody>
+        <tbody id="inventoryBody">
+            </tbody>
     </table>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6...", 
-        authDomain: "footprint-shop.firebaseapp.com",
-        projectId: "footprint-shop",
-        storageBucket: "footprint-shop.firebasestorage.app",
-        messagingSenderId: "16952304600",
-        appId: "1:16952304600:web:7c8498522..."
+        apiKey: "YOUR_API_KEY",
+        projectId: "YOUR_PROJECT_ID"
+        // Boss, yahan apni poori config paste karein
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const colRef = collection(db, "products");
 
-    // Load Products in Table
-    const q = query(colRef, orderBy("date", "desc"));
-    onSnapshot(q, (snapshot) => {
-        const tbody = document.getElementById("inventoryBody");
-        tbody.innerHTML = "";
-        snapshot.forEach((doc) => {
-            const p = doc.data();
-            tbody.innerHTML += `
-                <tr>
-                    <td><img src="${p.img}"></td>
-                    <td>${p.name}</td>
-                    <td>Rs. ${p.price}</td>
-                    <td>
-                        <button class="edit-btn" onclick="prepareEdit('${doc.id}', '${p.name}', '${p.price}', '${p.img}')">EDIT</button>
-                        <button class="del-btn" onclick="deleteProduct('${doc.id}')">DELETE</button>
-                    </td>
-                </tr>`;
-        });
-    });
-
     // Save or Update Product
-    window.saveProduct = async () => {
-        const id = document.getElementById("productId").value;
+    document.getElementById("saveBtn").onclick = async () => {
+        const id = document.getElementById("prodId").value;
         const name = document.getElementById("name").value;
-        const price = document.getElementById("price").value;
+        const price = Number(document.getElementById("price").value);
         const img = document.getElementById("img").value;
+        const category = document.getElementById("category").value;
 
-        if(!name || !price || !img) return alert("Sari details bhariye Boss!");
+        if(!name || !price || !img) return alert("Please fill all fields!");
 
         if(id) {
-            // Update Existing
-            await updateDoc(doc(db, "products", id), { name, price, img });
-            alert("Product update ho gaya!");
+            await updateDoc(doc(db, "products", id), { name, price, img, category });
+            document.getElementById("prodId").value = "";
         } else {
-            // Add New
-            await addDoc(colRef, { name, price, img, date: serverTimestamp() });
-            alert("Naya product add ho gaya!");
+            await addDoc(colRef, { name, price, img, category, date: serverTimestamp() });
         }
-        resetForm();
-    };
 
-    // Prepare for Edit
-    window.prepareEdit = (id, name, price, img) => {
-        document.getElementById("productId").value = id;
-        document.getElementById("name").value = name;
-        document.getElementById("price").value = price;
-        document.getElementById("img").value = img;
-        
-        document.getElementById("formTitle").innerText = "Edit Product";
-        document.getElementById("mainBtn").innerText = "UPDATE PRODUCT";
-        document.getElementById("cancelBtn").style.display = "inline-block";
-    };
-
-    // Delete Product
-    window.deleteProduct = async (id) => {
-        if(confirm("Kya aap ise sach mein delete karna chahte hain?")) {
-            await deleteDoc(doc(db, "products", id));
-        }
-    };
-
-    window.resetForm = () => {
-        document.getElementById("productId").value = "";
+        // Reset Form
         document.getElementById("name").value = "";
         document.getElementById("price").value = "";
         document.getElementById("img").value = "";
-        document.getElementById("formTitle").innerText = "Add New Product";
-        document.getElementById("mainBtn").innerText = "ADD PRODUCT";
-        document.getElementById("cancelBtn").style.display = "none";
+        document.getElementById("saveBtn").innerText = "SAVE PRODUCT";
+    };
+
+    // Real-time Inventory List
+    onSnapshot(colRef, (snapshot) => {
+        const tbody = document.getElementById("inventoryBody");
+        tbody.innerHTML = "";
+        snapshot.docs.forEach(docSnap => {
+            const p = docSnap.data();
+            const id = docSnap.id;
+            tbody.innerHTML += `
+                <tr>
+                    <td><img src="${p.img}" width="50" height="50"></td>
+                    <td>${p.name}</td>
+                    <td><b>${p.category || 'N/A'}</b></td>
+                    <td>Rs. ${p.price}</td>
+                    <td>
+                        <button class="edit-btn" onclick="editProduct('${id}', '${p.name}', ${p.price}, '${p.img}', '${p.category}')">Edit</button>
+                        <button class="del-btn" onclick="deleteProduct('${id}')">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+    });
+
+    window.editProduct = (id, name, price, img, cat) => {
+        document.getElementById("prodId").value = id;
+        document.getElementById("name").value = name;
+        document.getElementById("price").value = price;
+        document.getElementById("img").value = img;
+        document.getElementById("category").value = cat || "Sports";
+        document.getElementById("saveBtn").innerText = "UPDATE PRODUCT";
+        window.scrollTo(0,0);
+    };
+
+    window.deleteProduct = async (id) => {
+        if(confirm("Are you sure?")) {
+            await deleteDoc(doc(db, "products", id));
+        }
     };
 </script>
 </body>
