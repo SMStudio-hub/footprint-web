@@ -3,138 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FootPrint | Master Control Panel</title>
+    <title>FootPrint Shop | Premium Footwear</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --dark: #222; --accent: #ff4757; --bg: #f0f2f5; --green: #27ae60; --blue: #3498db; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; }
-        .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        h2 { margin-top: 0; color: var(--dark); border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.1rem; }
-        label { font-weight: bold; display: block; margin-top: 15px; font-size: 13px; color: #444; }
-        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; font-size: 14px; box-sizing: border-box; }
+        :root { --main: #c0392b; --bg: #f8f9fa; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: #333; }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
-        .size-item { display: flex; align-items: center; gap: 4px; background: #f9f9f9; padding: 8px; border-radius: 6px; border: 1px solid #eee; font-size: 12px; }
-        .size-item input { width: auto; margin: 0; }
+        #promoBar { background: var(--main); color: white; font-size: 12px; padding: 6px; text-align: center; font-weight: bold; }
+        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        #brandName { font-size: 26px; font-weight: 800; letter-spacing: 2px; color: var(--main); margin: 0; text-transform: uppercase; }
 
-        .btn-save { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-theme { background: var(--green); color: white; border: none; font-weight: bold; cursor: pointer; }
-        .btn-save:hover { background: #000; }
+        .search-container { padding: 10px 15px; background: white; }
+        #searchInput { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; font-size: 14px; background: #f9f9f9; box-sizing: border-box; }
         
-        #subCatBox { display: none; background: #fff8e1; padding: 12px; border-radius: 8px; border: 1px dashed #f1c40f; margin-top: 10px; }
+        .filter-box { display: flex; justify-content: flex-start; gap: 10px; padding: 10px 15px; overflow-x: auto; white-space: nowrap; background: white; border-bottom: 1px solid #eee; scrollbar-width: none; }
+        .filter-btn { padding: 8px 20px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; flex-shrink: 0; }
+        .filter-btn.active { background: var(--main); color: white; border-color: var(--main); }
+
+        .container { padding: 15px; max-width: 1200px; margin: auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; display: flex; flex-direction: column; border: 1px solid #f0f0f0; }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .info { padding: 12px; flex-grow: 1; }
+        .size-badge { background: #eee; color: #555; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; float: right; }
+        .category-tag { font-size: 10px; text-transform: uppercase; color: #888; font-weight: bold; }
+        .name { font-size: 14px; font-weight: 600; color: #222; margin: 4px 0; height: 40px; overflow: hidden; }
+        .price-row { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        .curr-price { font-size: 17px; font-weight: 800; color: var(--main); }
         
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 13px; }
-        th { background: #f8f9fa; }
-        img { border-radius: 4px; object-fit: cover; border: 1px solid #eee; }
-        .edit-btn { background: var(--blue); color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; }
-        .del-btn { background: var(--accent); color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; margin-left: 5px; }
+        .buy-btn { width: 100%; background: #222; color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        /* Size Guide Style */
+        .guide-link { font-size: 11px; color: var(--blue); text-decoration: underline; cursor: pointer; display: block; margin-top: 5px; color: #3498db; }
+
+        #noProducts { display: none; text-align: center; padding: 40px; color: #888; grid-column: 1 / -1; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2><i class="fas fa-magic"></i> Website Appearance</h2>
-    <div class="grid-2">
-        <div>
-            <label>Brand Name:</label>
-            <input type="text" id="setBrand" placeholder="e.g. FOOTPRINT">
-        </div>
-        <div>
-            <label>Promo Text:</label>
-            <input type="text" id="setPromo" placeholder="e.g. 20% OFF TODAY">
-        </div>
-    </div>
-    <label>Offer Banner URL:</label>
-    <input type="text" id="setBanner" placeholder="Paste image link for top banner">
-    <div class="grid-2">
-        <div>
-            <label>Theme Color:</label>
-            <input type="color" id="setTheme" value="#c0392b" style="height:45px">
-        </div>
-        <div>
-            <label>Background:</label>
-            <input type="color" id="setBg" value="#f8f9fa" style="height:45px">
-        </div>
-    </div>
-    <button class="btn-theme" id="updateSettingsBtn">UPDATE WEBSITE LOOKS</button>
+<div id="promoBar">Loading...</div>
+<header><h1 id="brandName">FOOTPRINT</h1></header>
+
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search by name, size or category..." oninput="handleSearch()">
 </div>
 
-<div class="box">
-    <h2><i class="fas fa-plus-circle"></i> Add/Edit Product</h2>
-    <input type="hidden" id="prodId">
-    
-    <label>Product Name:</label>
-    <input type="text" id="name" placeholder="Shoe or Slipper Name">
-    
-    <div class="grid-2">
-        <div>
-            <label>Price (Rs.):</label>
-            <input type="number" id="price" placeholder="599">
-        </div>
-        <div>
-            <label>Discount (%):</label>
-            <input type="number" id="discount" placeholder="10">
-        </div>
-    </div>
-    
-    <label>Product Image URL:</label>
-    <input type="text" id="img" placeholder="Paste direct image link">
-    
-    <label>Category:</label>
-    <select id="category">
-        <option value="Sports">Sports</option>
-        <option value="Casual">Casual</option>
-        <option value="Sleeper">Sleeper</option>
-    </select>
-
-    <div id="subCatBox">
-        <label>Sleeper For:</label>
-        <select id="subCategory">
-            <option value="Men">Men</option>
-            <option value="Women">Women</option>
-            <option value="Kids">Kids</option>
-        </select>
-    </div>
-
-    <label>Available Sizes (UK):</label>
-    <div class="size-grid">
-        <div class="size-item"><input type="checkbox" class="size-opt" value="4"> 4</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="5"> 5</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="6"> 6</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="7"> 7</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="8"> 8</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="9"> 9</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="10"> 10</div>
-    </div>
-    
-    <button class="btn-save" id="saveBtn">SAVE PRODUCT TO STORE</button>
+<div class="filter-box" id="categoryFilters">
+    <button class="filter-btn active" onclick="filterProducts('All', this)">All</button>
+    <button class="filter-btn" onclick="filterProducts('Sports', this)">Sports</button>
+    <button class="filter-btn" onclick="filterProducts('Casual', this)">Casual</button>
+    <button class="filter-btn" onclick="filterProducts('Sleeper', this)">Sleeper</button>
 </div>
 
-<div class="box">
-    <h2><i class="fas fa-boxes"></i> Live Inventory</h2>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="inventoryBody"></tbody>
-        </table>
-    </div>
+<div class="container">
+    <div class="grid" id="productGrid"></div>
+    <div id="noProducts">No products found.</div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // BOSS: Aapki FootPrint-Shop Config integrate kar di gayi hai
     const firebaseConfig = {
         apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
         authDomain: "footprint-shop.firebaseapp.com",
@@ -146,119 +78,99 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const prodRef = collection(db, "products");
+    let allOriginalProducts = [];
+    let currentCategory = 'All';
 
-    // Appearance Logic
-    document.getElementById("updateSettingsBtn").onclick = async () => {
-        try {
-            await setDoc(doc(db, "settings", "appearance"), {
-                brandName: document.getElementById("setBrand").value,
-                promoText: document.getElementById("setPromo").value,
-                bannerUrl: document.getElementById("setBanner").value,
-                themeColor: document.getElementById("setTheme").value,
-                bgColor: document.getElementById("setBg").value
-            });
-            alert("✅ Website looks updated successfully!");
-        } catch(e) { alert("Error: " + e.message); }
-    };
-
-    // Category Box Toggle
-    document.getElementById("category").onchange = (e) => {
-        document.getElementById("subCatBox").style.display = (e.target.value === "Sleeper") ? "block" : "none";
-    };
-
-    // Save/Update Product
-    document.getElementById("saveBtn").onclick = async () => {
-        const id = document.getElementById("prodId").value;
-        const name = document.getElementById("name").value;
-        const price = Number(document.getElementById("price").value);
-        const discount = Number(document.getElementById("discount").value) || 0;
-        const img = document.getElementById("img").value;
-        const category = document.getElementById("category").value;
-        const subCategory = (category === "Sleeper") ? document.getElementById("subCategory").value : "";
-        const sizes = Array.from(document.querySelectorAll('.size-opt:checked')).map(el => el.value);
-
-        if(!name || !price || !img || sizes.length === 0) return alert("Please fill Name, Price, Image and select at least one Size!");
-
-        const data = { name, price, discount, img, category, subCategory, sizes, updated: serverTimestamp() };
-
-        try {
-            if(id) {
-                await updateDoc(doc(db, "products", id), data);
-                alert("✅ Product Updated Successfully!");
-            } else {
-                await addDoc(prodRef, data);
-                alert("✅ New Product Added!");
-            }
-            resetForm();
-        } catch(e) { alert("Error: " + e.message); }
-    };
-
-    function resetForm() {
-        document.getElementById("prodId").value = "";
-        document.getElementById("name").value = "";
-        document.getElementById("price").value = "";
-        document.getElementById("discount").value = "";
-        document.getElementById("img").value = "";
-        document.querySelectorAll('.size-opt').forEach(el => el.checked = false);
-        document.getElementById("saveBtn").innerText = "SAVE PRODUCT TO STORE";
-        document.getElementById("subCatBox").style.display = "none";
-    }
-
-    // Real-time Inventory Sync
-    onSnapshot(prodRef, (snap) => {
-        const tbody = document.getElementById("inventoryBody");
-        tbody.innerHTML = snap.docs.map(docSnap => {
-            const p = docSnap.data();
-            const id = docSnap.id;
-            return `
-                <tr>
-                    <td><img src="${p.img}" width="45" height="45" onerror="this.src='https://via.placeholder.com/45'"></td>
-                    <td><b>${p.name}</b><br><small>${p.category} ${p.subCategory ? '('+p.subCategory+')' : ''}</small></td>
-                    <td>₹${p.price}</td>
-                    <td>
-                        <button class="edit-btn" onclick="triggerEdit('${id}')">Edit</button>
-                        <button class="del-btn" onclick="triggerDelete('${id}')">Del</button>
-                    </td>
-                </tr>`;
-        }).join('');
+    // Settings Sync
+    onSnapshot(doc(db, "settings", "appearance"), (s) => {
+        if(s.exists()){
+            const d = s.data();
+            if(d.brandName) document.getElementById("brandName").innerText = d.brandName;
+            if(d.promoText) document.getElementById("promoBar").innerText = d.promoText;
+            if(d.themeColor) document.documentElement.style.setProperty('--main', d.themeColor);
+        }
     });
 
-    // Edit Function
-    window.triggerEdit = async (id) => {
-        const docSnap = await getDoc(doc(db, "products", id));
-        if (docSnap.exists()) {
-            const p = docSnap.data();
-            document.getElementById("prodId").value = id;
-            document.getElementById("name").value = p.name;
-            document.getElementById("price").value = p.price;
-            document.getElementById("discount").value = p.discount || 0;
-            document.getElementById("img").value = p.img;
-            document.getElementById("category").value = p.category;
-            
-            if(p.category === "Sleeper") {
-                document.getElementById("subCatBox").style.display = "block";
-                document.getElementById("subCategory").value = p.subCategory;
+    // Real-time Inventory Load with Size Splitting Logic
+    onSnapshot(collection(db, "products"), (snap) => {
+        allOriginalProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
+        handleSearch();
+    });
+
+    function renderGrid(products) {
+        const grid = document.getElementById("productGrid");
+        const noProd = document.getElementById("noProducts");
+        
+        // BOSS: Yahan ho rahi hai Size Splitting
+        let displayItems = [];
+        products.forEach(p => {
+            if(p.sizes && p.sizes.length > 0) {
+                p.sizes.forEach(size => {
+                    displayItems.push({...p, currentDisplaySize: size});
+                });
             } else {
-                document.getElementById("subCatBox").style.display = "none";
+                displayItems.push({...p, currentDisplaySize: 'N/A'});
             }
+        });
 
-            document.querySelectorAll('.size-opt').forEach(el => {
-                el.checked = p.sizes.includes(el.value);
-            });
-
-            document.getElementById("saveBtn").innerText = "UPDATE PRODUCT";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        if(displayItems.length === 0) {
+            grid.innerHTML = "";
+            noProd.style.display = "block";
+            return;
         }
+        
+        noProd.style.display = "none";
+        grid.innerHTML = displayItems.map(p => {
+            const discPrice = p.discount > 0 ? Math.round(p.price - (p.price * p.discount / 100)) : p.price;
+            return `
+                <div class="card">
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'">
+                    <div class="info">
+                        <span class="size-badge">Size: ${p.currentDisplaySize}</span>
+                        <span class="category-tag">${p.category}</span>
+                        <div class="name">${p.name}</div>
+                        <div class="price-row">
+                            <span class="curr-price">₹${discPrice}</span>
+                        </div>
+                        ${p.sizeGuide ? `<span class="guide-link" onclick="window.open('${p.sizeGuide}','_blank')">View Size Guide</span>` : ''}
+                    </div>
+                    <button class="buy-btn" onclick="orderNow('${p.name}', '${discPrice}', '${p.currentDisplaySize}')">
+                        <i class="fab fa-whatsapp"></i> BUY SIZE ${p.currentDisplaySize}
+                    </button>
+                </div>`;
+        }).join('');
+    }
+
+    window.filterProducts = (cat, btn) => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = cat;
+        handleSearch();
     };
 
-    // Delete Function
-    window.triggerDelete = async (id) => {
-        if(confirm("Boss, kya aap sure hain? Yeh product shop se permanent delete ho jayega.")) {
-            try {
-                await deleteDoc(doc(db, "products", id));
-            } catch(e) { alert(e.message); }
+    window.handleSearch = () => {
+        const query = document.getElementById("searchInput").value.toLowerCase();
+        let filtered = allOriginalProducts;
+
+        if(currentCategory !== 'All') {
+            filtered = filtered.filter(p => p.category === currentCategory);
         }
+
+        if(query) {
+            filtered = filtered.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                p.category.toLowerCase().includes(query) ||
+                (p.sizes && p.sizes.join(',').includes(query))
+            );
+        }
+
+        renderGrid(filtered);
+    };
+
+    window.orderNow = (name, price, size) => {
+        const phone = "917003478789"; 
+        const text = `*NEW ORDER*\n*Item:* ${name}\n*Size:* ${size}\n*Price:* ₹${price}\n\nI want to buy this size. Is it available?`;
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
     };
 </script>
 </body>
