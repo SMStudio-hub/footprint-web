@@ -5,58 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FootPrint Shop | Premium Footwear</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --main: #c0392b; --bg: #f8f9fa; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: #333; }
         
-        /* Dynamic Header */
+        /* Header & Promo */
+        #promoBar { background: var(--main); color: white; font-size: 12px; padding: 6px; text-align: center; font-weight: bold; }
         header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        #brandName { font-size: 24px; font-weight: 900; letter-spacing: 2px; color: var(--main); margin: 0; text-transform: uppercase; }
-        #promoBar { background: var(--main); color: white; font-size: 12px; padding: 5px; text-align: center; font-weight: bold; }
+        #brandName { font-size: 26px; font-weight: 800; letter-spacing: 2px; color: var(--main); margin: 0; text-transform: uppercase; }
+
+        /* Search & Filters */
+        .search-container { padding: 10px 15px; background: white; }
+        #searchInput { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; font-size: 14px; background: #f9f9f9; box-sizing: border-box; }
+        
+        .filter-box { display: flex; justify-content: flex-start; gap: 10px; padding: 10px 15px; overflow-x: auto; white-space: nowrap; background: white; border-bottom: 1px solid #eee; scrollbar-width: none; }
+        .filter-btn { padding: 8px 20px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; flex-shrink: 0; }
+        .filter-btn.active { background: var(--main); color: white; border-color: var(--main); }
 
         /* Banner */
-        .banner-container { width: 100%; max-height: 250px; overflow: hidden; margin-bottom: 20px; }
-        #mainBanner { width: 100%; object-fit: cover; display: none; }
+        .banner-container { width: 100%; max-height: 250px; overflow: hidden; }
+        #mainBanner { width: 100%; height: 100%; object-fit: cover; display: none; }
 
         /* Product Grid */
         .container { padding: 15px; max-width: 1200px; margin: auto; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
 
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.05); position: relative; transition: 0.3s; }
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; transition: 0.3s; border: 1px solid #f0f0f0; display: flex; flex-direction: column; }
         .card img { width: 100%; height: 180px; object-fit: cover; }
-        .info { padding: 12px; }
-        .name { font-size: 14px; font-weight: 600; color: #333; height: 40px; overflow: hidden; }
+        .info { padding: 12px; flex-grow: 1; }
+        .category-tag { font-size: 10px; text-transform: uppercase; color: #888; font-weight: bold; }
+        .name { font-size: 14px; font-weight: 600; color: #222; margin: 4px 0; height: 40px; overflow: hidden; }
         .price-row { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
-        .curr-price { font-size: 16px; font-weight: 700; color: var(--main); }
-        .old-price { font-size: 12px; text-decoration: line-through; color: #888; }
-        .discount-tag { position: absolute; top: 10px; left: 10px; background: #27ae60; color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .curr-price { font-size: 17px; font-weight: 800; color: var(--main); }
+        .old-price { font-size: 12px; text-decoration: line-through; color: #aaa; }
         
-        .buy-btn { width: 100%; background: #000; color: white; border: none; padding: 10px; font-weight: bold; cursor: pointer; border-top: 1px solid #eee; }
+        .discount-tag { position: absolute; top: 12px; left: 12px; background: #27ae60; color: white; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; z-index: 1; }
         
-        .loader { text-align: center; padding: 50px; font-weight: bold; color: #888; }
+        .buy-btn { width: 100%; background: #222; color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .buy-btn:hover { background: #000; }
+        
+        .loader { text-align: center; padding: 50px; font-size: 18px; color: #888; }
+        #noProducts { display: none; text-align: center; padding: 40px; color: #888; grid-column: 1 / -1; }
     </style>
 </head>
 <body>
 
-<div id="promoBar">Loading Offers...</div>
+<div id="promoBar">Loading latest offers...</div>
 <header>
     <h1 id="brandName">FOOTPRINT</h1>
 </header>
+
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search shoes, sleepers, brands..." oninput="handleSearch()">
+</div>
+
+<div class="filter-box">
+    <button class="filter-btn active" onclick="filterProducts('All', this)">All</button>
+    <button class="filter-btn" onclick="filterProducts('Sports', this)">Sports</button>
+    <button class="filter-btn" onclick="filterProducts('Casual', this)">Casual</button>
+    <button class="filter-btn" onclick="filterProducts('Sleeper', this)">Sleeper</button>
+</div>
 
 <div class="banner-container">
     <img id="mainBanner" src="" alt="Promo Banner">
 </div>
 
 <div class="container">
-    <div id="loader" class="loader">Fetching latest collection...</div>
+    <div id="loader" class="loader"><i class="fas fa-spinner fa-spin"></i> Loading Shop...</div>
     <div class="grid" id="productGrid"></div>
+    <div id="noProducts">No products found.</div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // Configuration using your verified settings
     const firebaseConfig = {
         apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
         authDomain: "footprint-shop.firebaseapp.com",
@@ -68,51 +94,93 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    let allProducts = [];
+    let currentCategory = 'All';
 
-    // Load Website Settings (Brand, Theme, Banner)
+    // 1. Theme & Settings Sync
     onSnapshot(doc(db, "settings", "appearance"), (s) => {
         if(s.exists()){
-            const data = s.data();
-            if(data.brandName) document.getElementById("brandName").innerText = data.brandName;
-            if(data.promoText) document.getElementById("promoBar").innerText = data.promoText;
-            if(data.bannerUrl) {
+            const d = s.data();
+            if(d.brandName) document.getElementById("brandName").innerText = d.brandName;
+            if(d.promoText) document.getElementById("promoBar").innerText = d.promoText;
+            if(d.bannerUrl) {
                 const b = document.getElementById("mainBanner");
-                b.src = data.bannerUrl;
+                b.src = d.bannerUrl;
                 b.style.display = "block";
             }
-            if(data.themeColor) document.documentElement.style.setProperty('--main', data.themeColor);
-            if(data.bgColor) document.body.style.backgroundColor = data.bgColor;
+            if(d.themeColor) document.documentElement.style.setProperty('--main', d.themeColor);
+            if(d.bgColor) document.body.style.backgroundColor = d.bgColor;
         }
     });
 
-    // Load Products
+    // 2. Real-time Inventory Load
     onSnapshot(collection(db, "products"), (snap) => {
-        const grid = document.getElementById("productGrid");
+        allProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
         document.getElementById("loader").style.display = "none";
+        renderGrid(allProducts);
+    });
+
+    // 3. Render Grid Function
+    function renderGrid(products) {
+        const grid = document.getElementById("productGrid");
+        const noProd = document.getElementById("noProducts");
         
-        grid.innerHTML = snap.docs.map(docSnap => {
-            const p = docSnap.data();
+        if(products.length === 0) {
+            grid.innerHTML = "";
+            noProd.style.display = "block";
+            return;
+        }
+        
+        noProd.style.display = "none";
+        grid.innerHTML = products.map(p => {
             const discPrice = p.discount > 0 ? Math.round(p.price - (p.price * p.discount / 100)) : p.price;
-            
             return `
                 <div class="card">
                     ${p.discount > 0 ? `<div class="discount-tag">${p.discount}% OFF</div>` : ''}
-                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300x300?text=FootPrint'">
                     <div class="info">
+                        <span class="category-tag">${p.category} ${p.subCategory ? '• '+p.subCategory : ''}</span>
                         <div class="name">${p.name}</div>
                         <div class="price-row">
                             <span class="curr-price">₹${discPrice}</span>
                             ${p.discount > 0 ? `<span class="old-price">₹${p.price}</span>` : ''}
                         </div>
                     </div>
-                    <button class="buy-btn" onclick="orderNow('${p.name}')">ORDER NOW</button>
+                    <button class="buy-btn" onclick="orderNow('${p.name}', '${discPrice}')">
+                        <i class="fab fa-whatsapp"></i> BUY NOW
+                    </button>
                 </div>`;
         }).join('');
-    });
+    }
 
-    window.orderNow = (name) => {
-        const msg = encodeURIComponent(`Hi, I want to order: ${name}`);
-        window.open(`https://wa.me/91XXXXXXXXXX?text=${msg}`, '_blank'); // BOSS: Apna WhatsApp number yahan daalein
+    // 4. Filtering & Searching Logic
+    window.filterProducts = (cat, btn) => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = cat;
+        handleSearch(); // Filter aur search ko saath mein apply karein
+    };
+
+    window.handleSearch = () => {
+        const query = document.getElementById("searchInput").value.toLowerCase();
+        let filtered = allProducts;
+
+        if(currentCategory !== 'All') {
+            filtered = filtered.filter(p => p.category === currentCategory);
+        }
+
+        if(query) {
+            filtered = filtered.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+        }
+
+        renderGrid(filtered);
+    };
+
+    // 5. WhatsApp Order (Updated with BOSS's Number)
+    window.orderNow = (name, price) => {
+        const phone = "917003478789"; 
+        const text = `*NEW ORDER FROM WEBSITE*\n--------------------------\n*Product:* ${name}\n*Final Price:* ₹${price}\n--------------------------\nHi, I want to confirm my order.`;
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
     };
 </script>
 </body>
