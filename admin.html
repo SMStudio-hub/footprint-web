@@ -2,126 +2,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FootPrint | Master Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FootPrint | Master Admin Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --dark: #1a1a1a; --accent: #e74c3c; --bg: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
-        .box { background: white; padding: 20px; border-bottom: 10px solid #f0f2f5; }
-        h2 { font-size: 1.1rem; color: var(--dark); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase; }
-        input, select, button { width: 100%; height: 45px; margin: 5px 0; border-radius: 8px; border: 1px solid #ddd; padding: 0 12px; font-size: 15px; box-sizing: border-box; }
+        :root { --primary: #2c3e50; --accent: #e74c3c; --success: #27ae60; --blue: #3498db; --bg: #f4f7f6; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 15px; }
         
-        /* Floating Bulk Bar */
-        #bulkBar { 
-            position: fixed; top: 0; left: 0; width: 100%; background: #2c3e50; 
-            color: white; padding: 12px; z-index: 1000; display: none; 
-            justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .bulk-btn { background: #e67e22; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-left: 5px; }
+        /* Stats Dashboard */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--blue); }
+        .stat-card.clicks { border-left-color: var(--success); }
+        .stat-card h3 { margin: 0; font-size: 12px; color: #7f8c8d; text-transform: uppercase; }
+        .stat-card .value { font-size: 24px; font-weight: 800; color: var(--primary); margin-top: 5px; }
 
-        /* Grid Layouts */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .color-input-container { display: flex; flex-direction: column; }
-        .color-input-container label { font-size: 11px; margin-bottom: 2px; color: #666; }
-
-        /* Size Grid */
-        .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; }
-        .size-item { background: #f8f9fa; border: 1px solid #eee; padding: 8px; border-radius: 6px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .size-item input { width: 18px; height: 18px; margin: 0; }
-
-        /* Inventory List */
-        .prod-row { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 12px; background: white; }
-        .prod-row.selected { background: #e3f2fd; }
-        .prod-row img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
-        .check-box { width: 22px !important; height: 22px !important; margin: 0 !important; cursor: pointer; }
-        .action-btns { display: flex; gap: 15px; font-size: 18px; margin-left: auto; }
+        .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e0e0e0; }
+        h2 { font-size: 1rem; color: var(--primary); border-bottom: 2px solid #f1f1f1; padding-bottom: 12px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
         
-        .btn-green { background: #27ae60; color: white; border: none; font-weight: bold; height: 50px; cursor: pointer; }
-        .btn-black { background: var(--dark); color: white; border: none; font-weight: bold; height: 55px; cursor: pointer; margin-top: 10px; }
+        input, select, button { width: 100%; height: 48px; margin: 8px 0; border-radius: 10px; border: 1px solid #dcdde1; padding: 0 15px; font-size: 14px; box-sizing: border-box; transition: 0.3s; }
+        input:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn-save { background: var(--blue); color: white; border: none; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-reset { background: #95a5a6; color: white; border: none; width: auto; height: 30px; font-size: 10px; padding: 0 10px; margin: 0; }
+        
+        .ad-toggle { background: #ebf5fb; padding: 15px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border: 1px solid #d6eaf8; }
+        
+        .prod-item { display: flex; align-items: center; background: #fff; padding: 10px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #eee; }
+        .prod-item img { width: 45px; height: 45px; border-radius: 8px; margin-right: 12px; object-fit: cover; }
     </style>
 </head>
 <body>
 
-<div id="bulkBar">
-    <div><span id="selCount">0</span> Selected</div>
-    <div style="display:flex;">
-        <button class="bulk-btn" onclick="bulkAction(true)">SOLD OUT</button>
-        <button class="bulk-btn" style="background:#27ae60" onclick="bulkAction(false)">IN STOCK</button>
-        <button class="bulk-btn" style="background:#c0392b" onclick="bulkDelete()"><i class="fas fa-trash"></i></button>
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Live Inventory</h3>
+        <div class="value" id="totalProds">0</div>
+    </div>
+    <div class="stat-card clicks">
+        <h3>Ad Clicks</h3>
+        <div class="value" id="adClicks">0</div>
+        <button class="btn-reset" onclick="resetClicks()">Reset Counter</button>
     </div>
 </div>
 
 <div class="box">
-    <h2><i class="fas fa-pen"></i> Website Appearance Editor</h2>
-    <div class="grid-2">
-        <input type="text" id="setBrand" placeholder="Brand Name (e.g. FOOTPRINT)">
-        <input type="text" id="setPromo" placeholder="Promo Text (e.g. 50% OFF)">
+    <h2><i class="fas fa-bullhorn" style="color:var(--accent)"></i> Ad Revenue Manager</h2>
+    <div class="ad-toggle">
+        <span style="font-weight: 600; font-size: 14px;">Active Ad Status</span>
+        <input type="checkbox" id="showAdBanner" style="width:40px; height:20px; cursor:pointer;">
     </div>
-    <input type="text" id="setBanner" placeholder="Main Banner Image URL">
-    
     <div class="grid-2">
-        <div class="color-input-container">
-            <label>Theme Color</label>
-            <input type="color" id="setTheme" value="#c0392b" style="height:40px; padding:2px;">
-        </div>
-        <div class="color-input-container">
-            <label>Background Color</label>
-            <input type="color" id="setBg" value="#f4f7f6" style="height:40px; padding:2px;">
-        </div>
+        <input type="text" id="adTag" placeholder="Badge (e.g. Sale)">
+        <input type="text" id="adTitle" placeholder="Catchy Headline">
     </div>
-
+    <input type="text" id="adDescription" placeholder="Description / Offer details">
+    <input type="text" id="adImg" placeholder="Image URL (Clear & High Res)">
     <div class="grid-2">
-        <input type="text" id="setBtnColor" placeholder="Button Color (Hex Code)">
-        <input type="text" id="setContact" placeholder="WhatsApp Number (With 91)">
+        <input type="text" id="adBtnText" placeholder="Button Label">
+        <input type="text" id="adLink" placeholder="Where should it go? (Link)">
     </div>
-    <button class="btn-green" onclick="updateSiteSettings()">APPLY ALL CHANGES</button>
+    <button class="btn-save" onclick="updateAdSettings()">Push Ad to Live Site</button>
 </div>
 
 <div class="box">
-    <h2><i class="fas fa-plus-circle"></i> Product Manager</h2>
+    <h2><i class="fas fa-plus-circle" style="color:var(--success)"></i> New Arrival</h2>
     <input type="hidden" id="prodId">
-    <input type="text" id="name" placeholder="Product Full Name">
-    
+    <input type="text" id="name" placeholder="Shoe Name">
     <div class="grid-2">
-        <input type="number" id="price" placeholder="Price (Rs.)">
+        <input type="number" id="price" placeholder="Price (₹)">
         <input type="number" id="discount" placeholder="Discount %">
     </div>
-    
-    <input type="text" id="imgUrl" placeholder="Direct Image URL (.jpg/.png)">
-    <input type="text" id="setSizeGuide" placeholder="Size Guide Image URL (Optional)">
-    
-    <select id="setCat">
-        <option value="Sports">Sports</option>
-        <option value="Casual">Casual</option>
-        <option value="Formal">Formal</option>
-        <option value="Slippers">Slippers/Sandals</option>
-    </select>
-
-    <label style="font-size: 12px; font-weight: bold; display: block; margin-top: 10px;">Select Sizes (UK):</label>
-    <div class="size-grid" id="sizeOptions"></div>
-
-    <div style="background: #fff0f0; padding: 12px; border-radius: 8px; margin: 10px 0; display: flex; align-items: center; gap: 10px; border: 1px solid #ffdada;">
-        <input type="checkbox" id="isSoldOut" style="width:20px; height:20px;"> 
-        <label for="isSoldOut" style="color:#e74c3c; font-weight:bold; font-size: 14px;">MARK AS SOLD OUT</label>
+    <input type="text" id="imgUrl" placeholder="Product Image URL">
+    <div class="grid-2">
+        <select id="setCat">
+            <option value="Sports">Sports</option>
+            <option value="Casual">Casual</option>
+            <option value="slippers">Slippers</option>
+        </select>
+        <input type="text" id="sizes" placeholder="Sizes (e.g. 7,8,9,10)">
     </div>
-    
-    <button class="btn-black" id="saveBtn">SAVE & UPLOAD PRODUCT</button>
+    <button class="btn-save" id="saveBtn" style="background:var(--primary)">Publish Product</button>
 </div>
 
 <div class="box">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h2 style="border:none; margin:0;"><i class="fas fa-boxes"></i> Live Inventory</h2>
-        <button onclick="toggleSelectAll()" id="selectAllBtn" style="width:auto; height:auto; padding:6px 12px; font-size:11px; background:#34495e; color:white; border:none; border-radius:4px;">SELECT ALL</button>
-    </div>
+    <h2><i class="fas fa-list-ul"></i> Managed Inventory</h2>
     <div id="inventoryBody"></div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, writeBatch, getDoc, addDoc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, getDoc, addDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- PASTE YOUR FIREBASE CONFIG HERE ---
     const firebaseConfig = {
         apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
         authDomain: "footprint-shop.firebaseapp.com",
@@ -134,98 +106,58 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Build Sizes 4-12
-    const szBox = document.getElementById('sizeOptions');
-    for(let i=4; i<=12; i++) {
-        szBox.innerHTML += `<div class="size-item"><input type="checkbox" class="sz" value="${i}"> ${i}</div>`;
-    }
+    // --- TRACKING & SETTINGS ---
+    window.updateAdSettings = async () => {
+        const data = {
+            showAdBanner: document.getElementById('showAdBanner').checked,
+            adTag: document.getElementById('adTag').value,
+            adTitle: document.getElementById('adTitle').value,
+            adDescription: document.getElementById('adDescription').value,
+            adImg: document.getElementById('adImg').value,
+            adBtnText: document.getElementById('adBtnText').value,
+            adLink: document.getElementById('adLink').value
+        };
+        await updateDoc(doc(db, "settings", "appearance"), data);
+        alert("Success! Website Ad has been updated.");
+    };
 
-    // Load Settings on Start
-    const loadSettings = async () => {
-        const s = await getDoc(doc(db, "settings", "appearance"));
-        if(s.exists()){
-            const d = s.data();
-            document.getElementById('setBrand').value = d.brandName || '';
-            document.getElementById('setPromo').value = d.promoText || '';
-            document.getElementById('setBanner').value = d.bannerUrl || '';
-            document.getElementById('setTheme').value = d.themeColor || '#c0392b';
-            document.getElementById('setBg').value = d.bgColor || '#f4f7f6';
-            document.getElementById('setBtnColor').value = d.btnColor || '';
-            document.getElementById('setContact').value = d.whatsapp || '';
+    window.resetClicks = async () => {
+        if(confirm("Zero out click data?")) {
+            await updateDoc(doc(db, "settings", "appearance"), { adClicks: 0 });
         }
     };
-    loadSettings();
 
-    // Load Inventory
+    // --- REALTIME ANALYTICS ---
+    onSnapshot(doc(db, "settings", "appearance"), (s) => {
+        if(s.exists()){
+            const d = s.data();
+            document.getElementById('adClicks').innerText = d.adClicks || 0;
+            document.getElementById('showAdBanner').checked = d.showAdBanner !== false;
+            document.getElementById('adTag').value = d.adTag || '';
+            document.getElementById('adTitle').value = d.adTitle || '';
+            document.getElementById('adDescription').value = d.adDescription || '';
+            document.getElementById('adImg').value = d.adImg || '';
+            document.getElementById('adBtnText').value = d.adBtnText || '';
+            document.getElementById('adLink').value = d.adLink || '';
+        }
+    });
+
+    // --- PRODUCT MANAGEMENT ---
     onSnapshot(collection(db, "products"), (snap) => {
+        document.getElementById('totalProds').innerText = snap.size;
         const body = document.getElementById('inventoryBody');
         body.innerHTML = snap.docs.map(d => {
             const p = d.data();
             return `
-            <div class="prod-row" id="row-${d.id}">
-                <input type="checkbox" class="item-chk check-box" value="${d.id}" onchange="updateSelectionUI()">
-                <img src="${p.img}" onerror="this.src='https://via.placeholder.com/60'">
-                <div style="flex-grow:1">
-                    <b style="font-size:14px;">${p.name}</b> ${p.isSoldOut ? '<span style="color:red; font-size:10px;">[SOLD OUT]</span>' : ''}<br>
-                    <small>Rs. ${p.price} | ${p.cat || 'General'}</small>
+            <div class="prod-item">
+                <img src="${p.img}">
+                <div style="flex-grow:1; font-size:13px;">
+                    <b>${p.name}</b><br>₹${p.price} | ${p.cat}
                 </div>
-                <div class="action-btns">
-                    <i class="fas fa-edit" style="color:#3498db" onclick="editProd('${d.id}')"></i>
-                    <i class="fas fa-trash-alt" style="color:#e74c3c" onclick="deleteSingle('${d.id}')"></i>
-                </div>
+                <i class="fas fa-edit" style="color:var(--blue); cursor:pointer;" onclick="editProd('${d.id}')"></i>
             </div>`;
         }).join('');
-        updateSelectionUI();
     });
-
-    // Multi-Select & Bulk Logic
-    window.updateSelectionUI = () => {
-        const selected = document.querySelectorAll('.item-chk:checked');
-        const bar = document.getElementById('bulkBar');
-        document.getElementById('selCount').innerText = selected.length;
-        bar.style.display = selected.length > 0 ? 'flex' : 'none';
-        document.querySelectorAll('.prod-row').forEach(row => row.classList.remove('selected'));
-        selected.forEach(chk => document.getElementById(`row-${chk.value}`).classList.add('selected'));
-    };
-
-    window.toggleSelectAll = () => {
-        const checkboxes = document.querySelectorAll('.item-chk');
-        const allChecked = Array.from(checkboxes).every(c => c.checked);
-        checkboxes.forEach(c => c.checked = !allChecked);
-        updateSelectionUI();
-    };
-
-    window.bulkAction = async (status) => {
-        const ids = Array.from(document.querySelectorAll('.item-chk:checked')).map(c => c.value);
-        const batch = writeBatch(db);
-        ids.forEach(id => batch.update(doc(db, "products", id), { isSoldOut: status }));
-        await batch.commit();
-        alert("Success!");
-    };
-
-    window.bulkDelete = async () => {
-        if(!confirm("Delete selected?")) return;
-        const ids = Array.from(document.querySelectorAll('.item-chk:checked')).map(c => c.value);
-        const batch = writeBatch(db);
-        ids.forEach(id => batch.delete(doc(db, "products", id)));
-        await batch.commit();
-    };
-
-    window.deleteSingle = async (id) => { if(confirm("Delete this product?")) await deleteDoc(doc(db, "products", id)); };
-
-    // --- Save Functions ---
-    window.updateSiteSettings = async () => {
-        await setDoc(doc(db, "settings", "appearance"), {
-            brandName: document.getElementById('setBrand').value,
-            promoText: document.getElementById('setPromo').value,
-            bannerUrl: document.getElementById('setBanner').value,
-            themeColor: document.getElementById('setTheme').value,
-            bgColor: document.getElementById('setBg').value,
-            btnColor: document.getElementById('setBtnColor').value,
-            whatsapp: document.getElementById('setContact').value
-        });
-        alert("Appearance Updated!");
-    };
 
     document.getElementById('saveBtn').onclick = async () => {
         const id = document.getElementById('prodId').value;
@@ -234,14 +166,12 @@
             price: Number(document.getElementById('price').value),
             discount: Number(document.getElementById('discount').value) || 0,
             img: document.getElementById('imgUrl').value,
-            sizeGuide: document.getElementById('setSizeGuide').value,
             cat: document.getElementById('setCat').value,
-            sizes: Array.from(document.querySelectorAll('.sz:checked')).map(el => el.value),
-            isSoldOut: document.getElementById('isSoldOut').checked,
-            updated: serverTimestamp()
+            sizes: document.getElementById('sizes').value.split(',').map(s => s.trim())
         };
         if(id) await updateDoc(doc(db, "products", id), data);
         else await addDoc(collection(db, "products"), data);
+        alert("Inventory Updated!");
         location.reload();
     };
 
@@ -251,13 +181,11 @@
         document.getElementById('prodId').value = id;
         document.getElementById('name').value = p.name;
         document.getElementById('price').value = p.price;
-        document.getElementById('discount').value = p.discount || 0;
+        document.getElementById('discount').value = p.discount;
         document.getElementById('imgUrl').value = p.img;
-        document.getElementById('setSizeGuide').value = p.sizeGuide || '';
-        document.getElementById('setCat').value = p.cat || 'Sports';
-        document.getElementById('isSoldOut').checked = p.isSoldOut || false;
-        document.querySelectorAll('.sz').forEach(el => el.checked = (p.sizes || []).includes(el.value));
-        document.getElementById('saveBtn').innerText = "UPDATE PRODUCT";
+        document.getElementById('setCat').value = p.cat;
+        document.getElementById('sizes').value = (p.sizes || []).join(',');
+        document.getElementById('saveBtn').innerText = "Update Now";
         window.scrollTo(0,0);
     };
 </script>
