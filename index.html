@@ -7,44 +7,84 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #c0392b; --bg: #f8f9fa; --gray: #888; }
+        :root { --main: #c0392b; --bg: #f8f9fa; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: #333; }
         
         #promoBar { background: var(--main); color: white; font-size: 12px; padding: 6px; text-align: center; font-weight: bold; }
         header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         #brandName { font-size: 26px; font-weight: 800; letter-spacing: 2px; color: var(--main); margin: 0; text-transform: uppercase; }
 
+        .search-container { padding: 10px 15px; background: white; }
+        #searchInput { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; font-size: 14px; background: #f9f9f9; box-sizing: border-box; }
+        
+        .filter-box { display: flex; justify-content: flex-start; gap: 10px; padding: 10px 15px; overflow-x: auto; white-space: nowrap; background: white; border-bottom: 1px solid #eee; scrollbar-width: none; }
+        .filter-btn { padding: 8px 20px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; flex-shrink: 0; }
+        .filter-btn.active { background: var(--main); color: white; border-color: var(--main); }
+
         .container { padding: 15px; max-width: 1200px; margin: auto; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
 
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; display: flex; flex-direction: column; border: 1px solid #f0f0f0; transition: 0.3s; }
-        .card.oos { opacity: 0.7; filter: grayscale(0.5); }
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; display: flex; flex-direction: column; border: 1px solid #f0f0f0; }
+        .sold-out-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-size: 10px; font-weight: bold; z-index: 2; }
         
         .card img { width: 100%; height: 180px; object-fit: cover; }
         .info { padding: 12px; flex-grow: 1; }
         .size-badge { background: #eee; color: #555; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; float: right; }
+        .category-tag { font-size: 10px; text-transform: uppercase; color: #888; font-weight: bold; }
         .name { font-size: 14px; font-weight: 600; color: #222; margin: 4px 0; height: 40px; overflow: hidden; }
+        .curr-price { font-size: 17px; font-weight: 800; color: var(--main); }
         
-        /* Buttons */
         .buy-btn { width: 100%; background: #222; color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .oos-btn { width: 100%; background: #ddd; color: #777; border: none; padding: 12px; font-weight: bold; cursor: not-allowed; display: flex; align-items: center; justify-content: center; }
+        .buy-btn:disabled { background: #ccc; cursor: not-allowed; }
         
-        .oos-tag { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .guide-link { font-size: 11px; text-decoration: underline; cursor: pointer; display: block; margin-top: 5px; color: #3498db; }
+        #noProducts { display: none; text-align: center; padding: 40px; color: #888; grid-column: 1 / -1; }
+
+        /* --- Ad Banner Styles --- */
+        #adBanner { background: #fff; border-radius: 15px; overflow: hidden; margin: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; text-align: center; border: 1px solid #f0f0f0; cursor: pointer; text-decoration: none; color: inherit; }
+        #adBanner img { width: 100%; height: 150px; object-fit: cover; }
+        #adBanner .ad-content { padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        #adBanner .ad-tag { background: var(--main); color: white; padding: 4px 10px; border-radius: 5px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        #adBanner .ad-title { font-size: 16px; font-weight: 700; color: #222; }
+        #adBanner .ad-description { font-size: 12px; color: #666; }
+        #adBanner .ad-button { background: #27ae60; color: white; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-<div id="promoBar">Loading...</div>
+<div id="promoBar">Loading Offers...</div>
 <header><h1 id="brandName">FOOTPRINT</h1></header>
+
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search shoes, slippers or sizes..." oninput="handleSearch()">
+</div>
+
+<div class="filter-box" id="categoryFilters">
+    <button class="filter-btn active" onclick="filterProducts('All', this)">All</button>
+    <button class="filter-btn" onclick="filterProducts('Sports', this)">Sports</button>
+    <button class="filter-btn" onclick="filterProducts('Casual', this)">Casual</button>
+    <button class="filter-btn" onclick="filterProducts('slippers', this)">Slippers</button>
+</div>
+
+<a id="adBanner" href="#" target="_blank" onclick="trackClick()">
+    <img src="https://via.placeholder.com/400x150/e74c3c/ffffff?text=ADVERTISEMENT" alt="Ad Banner">
+    <div class="ad-content">
+        <span class="ad-tag">Sponsored</span>
+        <div class="ad-title">Check out our new Winter Collection!</div>
+        <div class="ad-description">Comfortable and stylish footwear for all seasons.</div>
+        <span class="ad-button"><i class="fas fa-shopping-bag"></i> Shop Now</span>
+    </div>
+</a>
 
 <div class="container">
     <div class="grid" id="productGrid"></div>
+    <div id="noProducts">No products found in this category.</div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
@@ -57,47 +97,122 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    let allOriginalProducts = [];
+    let currentCategory = 'All';
 
+    // Settings Sync & Ad Control
+    onSnapshot(doc(db, "settings", "appearance"), (s) => {
+        if(s.exists()){
+            const d = s.data();
+            if(d.brandName) document.getElementById("brandName").innerText = d.brandName;
+            if(d.promoText) document.getElementById("promoBar").innerText = d.promoText;
+            if(d.themeColor) document.documentElement.style.setProperty('--main', d.themeColor);
+            
+            const adBanner = document.getElementById("adBanner");
+            if (d.adImg) adBanner.querySelector('img').src = d.adImg;
+            if (d.adTitle) adBanner.querySelector('.ad-title').innerText = d.adTitle;
+            if (d.adDescription) adBanner.querySelector('.ad-description').innerText = d.adDescription;
+            if (d.adLink) adBanner.href = d.adLink;
+            if (d.adBtnText) adBanner.querySelector('.ad-button').innerText = d.adBtnText;
+            if (d.adTag) adBanner.querySelector('.ad-tag').innerText = d.adTag;
+            adBanner.style.display = d.showAdBanner === false ? 'none' : 'flex';
+        }
+    });
+
+    // Load Products
     onSnapshot(collection(db, "products"), (snap) => {
-        const products = snap.docs.map(d => ({id: d.id, ...d.data()}));
-        renderGrid(products);
+        allOriginalProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
+        handleSearch();
     });
 
     function renderGrid(products) {
         const grid = document.getElementById("productGrid");
+        const noProd = document.getElementById("noProducts");
+        
         let displayItems = [];
-
         products.forEach(p => {
             if(p.sizes && p.sizes.length > 0) {
                 p.sizes.forEach(size => {
-                    // Yahan check hoga ki specific size stock mein hai ya nahi
-                    // Abhi ke liye agar product delete nahi hai toh 'in-stock' hi rahega
-                    displayItems.push({...p, currentSize: size, isAvailable: true}); 
+                    displayItems.push({...p, currentDisplaySize: size});
                 });
+            } else {
+                displayItems.push({...p, currentDisplaySize: 'Free'});
             }
         });
 
+        if(displayItems.length === 0) {
+            grid.innerHTML = "";
+            noProd.style.display = "block";
+            return;
+        }
+        
+        noProd.style.display = "none";
         grid.innerHTML = displayItems.map(p => {
-            const discPrice = Math.round(p.price - (p.price * (p.discount || 0) / 100));
+            const discPrice = p.discount > 0 ? Math.round(p.price - (p.price * p.discount / 100)) : p.price;
+            const soldOut = p.isSoldOut === true;
+
             return `
-                <div class="card">
-                    <img src="${p.img}">
+                <div class="card" style="opacity: ${soldOut ? '0.6' : '1'}">
+                    ${soldOut ? '<div class="sold-out-badge">OUT OF STOCK</div>' : ''}
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'">
                     <div class="info">
-                        <span class="size-badge">Size: ${p.currentSize}</span>
+                        <span class="size-badge">UK ${p.currentDisplaySize}</span>
+                        <span class="category-tag">${p.cat || 'General'}</span>
                         <div class="name">${p.name}</div>
                         <div class="curr-price">₹${discPrice}</div>
+                        ${p.sizeGuide ? `<span class="guide-link" onclick="window.open('${p.sizeGuide}','_blank')">Size Guide</span>` : ''}
                     </div>
-                    <button class="buy-btn" onclick="orderNow('${p.name}', '${discPrice}', '${p.currentSize}')">
-                        <i class="fab fa-whatsapp"></i> BUY SIZE ${p.currentSize}
+                    <button class="buy-btn" ${soldOut ? 'disabled' : ''} onclick="orderNow('${p.name}', '${discPrice}', '${p.currentDisplaySize}')">
+                        <i class="fab fa-whatsapp"></i> ${soldOut ? 'SOLD OUT' : 'BUY NOW'}
                     </button>
                 </div>`;
         }).join('');
     }
 
+    window.filterProducts = (cat, btn) => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = cat;
+        handleSearch();
+    };
+
+    window.handleSearch = () => {
+        const query = document.getElementById("searchInput").value.toLowerCase();
+        let filtered = allOriginalProducts;
+
+        if(currentCategory !== 'All') {
+            filtered = filtered.filter(p => {
+                const categoryValue = (p.cat || "").toLowerCase();
+                return categoryValue === currentCategory.toLowerCase();
+            });
+        }
+
+        if(query) {
+            filtered = filtered.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                (p.cat && p.cat.toLowerCase().includes(query)) ||
+                (p.sizes && p.sizes.join(',').includes(query))
+            );
+        }
+        renderGrid(filtered);
+    };
+
     window.orderNow = (name, price, size) => {
         const phone = "917003478789"; 
-        const text = `*ORDER REQUEST*\n*Item:* ${name}\n*Size:* ${size}\n*Price:* ₹${price}\n\nBoss, ye size available hai?`;
+        const text = `*NEW ORDER*\n*Product:* ${name}\n*Size:* UK ${size}\n*Price:* ₹${price}`;
         window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+    };
+
+    // --- Correct Place for trackClick function ---
+    window.trackClick = async () => {
+        try {
+            await updateDoc(doc(db, "settings", "appearance"), {
+                adClicks: increment(1)
+            });
+            console.log("Click Tracked!");
+        } catch (e) {
+            console.error("Tracking Error:", e);
+        }
     };
 </script>
 </body>
