@@ -2,111 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FootPrint | Master Control Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FootPrint | Master Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --dark: #222; --accent: #ff4757; --bg: #f0f2f5; --green: #27ae60; --blue: #3498db; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; }
-        .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        h2 { margin-top: 0; color: var(--dark); border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.1rem; }
-        label { font-weight: bold; display: block; margin-top: 15px; font-size: 13px; color: #444; }
-        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; font-size: 14px; box-sizing: border-box; }
+        :root { --dark: #1a1a1a; --accent: #e74c3c; --bg: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
+        .box { background: white; padding: 20px; border-bottom: 10px solid #f0f2f5; }
+        h2 { font-size: 1.1rem; color: var(--dark); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase; }
+        input, select, button { width: 100%; height: 45px; margin: 5px 0; border-radius: 8px; border: 1px solid #ddd; padding: 0 12px; font-size: 15px; box-sizing: border-box; }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
-        .size-item { display: flex; align-items: center; gap: 4px; background: #f9f9f9; padding: 8px; border-radius: 6px; border: 1px solid #eee; font-size: 12px; }
-        .size-item input { width: auto; margin: 0; }
+        /* Floating Bulk Bar */
+        #bulkBar { 
+            position: fixed; top: 0; left: 0; width: 100%; background: #2c3e50; 
+            color: white; padding: 12px; z-index: 1000; display: none; 
+            justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .bulk-btn { background: #e67e22; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-left: 5px; }
 
-        .btn-save { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-theme { background: var(--green); color: white; border: none; font-weight: bold; cursor: pointer; }
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .color-input-container { display: flex; flex-direction: column; }
+        .color-input-container label { font-size: 11px; margin-bottom: 2px; color: #666; }
+
+        /* Size Grid */
+        .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; }
+        .size-item { background: #f8f9fa; border: 1px solid #eee; padding: 8px; border-radius: 6px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .size-item input { width: 18px; height: 18px; margin: 0; }
+
+        /* Inventory List */
+        .prod-row { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #eee; gap: 12px; background: white; }
+        .prod-row.selected { background: #e3f2fd; }
+        .prod-row img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
+        .check-box { width: 22px !important; height: 22px !important; margin: 0 !important; cursor: pointer; }
+        .action-btns { display: flex; gap: 15px; font-size: 18px; margin-left: auto; }
         
-        #subCatBox { display: none; background: #fff8e1; padding: 12px; border-radius: 8px; border: 1px dashed #f1c40f; margin-top: 10px; }
-        .guide-info { font-size: 11px; color: #777; margin-top: -5px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; font-size: 12px; }
-        img { border-radius: 4px; object-fit: cover; }
-        .edit-btn { background: var(--blue); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
-        .del-btn { background: var(--accent); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+        .btn-green { background: #27ae60; color: white; border: none; font-weight: bold; height: 50px; cursor: pointer; }
+        .btn-black { background: var(--dark); color: white; border: none; font-weight: bold; height: 55px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2><i class="fas fa-magic"></i> Website Appearance</h2>
-    <div class="grid-2">
-        <input type="text" id="setBrand" placeholder="Brand Name">
-        <input type="text" id="setPromo" placeholder="Promo Text">
+<div id="bulkBar">
+    <div><span id="selCount">0</span> Selected</div>
+    <div style="display:flex;">
+        <button class="bulk-btn" onclick="bulkAction(true)">SOLD OUT</button>
+        <button class="bulk-btn" style="background:#27ae60" onclick="bulkAction(false)">IN STOCK</button>
+        <button class="bulk-btn" style="background:#c0392b" onclick="bulkDelete()"><i class="fas fa-trash"></i></button>
     </div>
-    <label>Offer Banner URL:</label>
-    <input type="text" id="setBanner" placeholder="Banner image link">
-    <button class="btn-theme" id="updateSettingsBtn">UPDATE WEBSITE LOOKS</button>
 </div>
 
 <div class="box">
-    <h2><i class="fas fa-plus-circle"></i> Add/Edit Product</h2>
-    <input type="hidden" id="prodId">
-    
-    <label>Product Name:</label>
-    <input type="text" id="name" placeholder="Shoe Name">
+    <h2><i class="fas fa-pen"></i> Website Appearance Editor</h2>
+    <div class="grid-2">
+        <input type="text" id="setBrand" placeholder="Brand Name (e.g. FOOTPRINT)">
+        <input type="text" id="setPromo" placeholder="Promo Text (e.g. 50% OFF)">
+    </div>
+    <input type="text" id="setBanner" placeholder="Main Banner Image URL">
     
     <div class="grid-2">
-        <input type="number" id="price" placeholder="Price (₹)">
-        <input type="number" id="discount" placeholder="Discount (%)">
+        <div class="color-input-container">
+            <label>Theme Color</label>
+            <input type="color" id="setTheme" value="#c0392b" style="height:40px; padding:2px;">
+        </div>
+        <div class="color-input-container">
+            <label>Background Color</label>
+            <input type="color" id="setBg" value="#f4f7f6" style="height:40px; padding:2px;">
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <input type="text" id="setBtnColor" placeholder="Button Color (Hex Code)">
+        <input type="text" id="setContact" placeholder="WhatsApp Number (With 91)">
+    </div>
+    <button class="btn-green" onclick="updateSiteSettings()">APPLY ALL CHANGES</button>
+</div>
+
+<div class="box">
+    <h2><i class="fas fa-plus-circle"></i> Product Manager</h2>
+    <input type="hidden" id="prodId">
+    <input type="text" id="name" placeholder="Product Full Name">
+    
+    <div class="grid-2">
+        <input type="number" id="price" placeholder="Price (Rs.)">
+        <input type="number" id="discount" placeholder="Discount %">
     </div>
     
-    <label>Product Image URL:</label>
-    <input type="text" id="img" placeholder="Paste main photo link">
+    <input type="text" id="imgUrl" placeholder="Direct Image URL (.jpg/.png)">
+    <input type="text" id="setSizeGuide" placeholder="Size Guide Image URL (Optional)">
     
-    <label style="color: var(--blue);">Product-Specific Size Guide URL (Optional):</label>
-    <input type="text" id="sizeGuide" placeholder="Paste Size Chart image link for THIS product">
-    <p class="guide-info">Yahan har product ka alag size chart photo link daal sakte hain.</p>
-
-    <label>Category:</label>
-    <select id="category">
+    <select id="setCat">
         <option value="Sports">Sports</option>
         <option value="Casual">Casual</option>
-        <option value="Sleeper">Sleeper</option>
+        <option value="Formal">Formal</option>
+        <option value="Slippers">Slippers/Sandals</option>
     </select>
 
-    <div id="subCatBox">
-        <label>Sleeper For:</label>
-        <select id="subCategory">
-            <option value="Men">Men</option>
-            <option value="Women">Women</option>
-            <option value="Kids">Kids</option>
-        </select>
-    </div>
+    <label style="font-size: 12px; font-weight: bold; display: block; margin-top: 10px;">Select Sizes (UK):</label>
+    <div class="size-grid" id="sizeOptions"></div>
 
-    <label>Available Sizes (UK):</label>
-    <div class="size-grid">
-        <div class="size-item"><input type="checkbox" class="size-opt" value="4"> 4</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="5"> 5</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="6"> 6</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="7"> 7</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="8"> 8</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="9"> 9</div>
-        <div class="size-item"><input type="checkbox" class="size-opt" value="10"> 10</div>
+    <div style="background: #fff0f0; padding: 12px; border-radius: 8px; margin: 10px 0; display: flex; align-items: center; gap: 10px; border: 1px solid #ffdada;">
+        <input type="checkbox" id="isSoldOut" style="width:20px; height:20px;"> 
+        <label for="isSoldOut" style="color:#e74c3c; font-weight:bold; font-size: 14px;">MARK AS SOLD OUT</label>
     </div>
     
-    <button class="btn-save" id="saveBtn">SAVE PRODUCT TO STORE</button>
+    <button class="btn-black" id="saveBtn">SAVE & UPLOAD PRODUCT</button>
 </div>
 
 <div class="box">
-    <h2><i class="fas fa-boxes"></i> Inventory</h2>
-    <div style="overflow-x:auto">
-        <table>
-            <thead><tr><th>Img</th><th>Name</th><th>Size Guide</th><th>Action</th></tr></thead>
-            <tbody id="inventoryBody"></tbody>
-        </table>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h2 style="border:none; margin:0;"><i class="fas fa-boxes"></i> Live Inventory</h2>
+        <button onclick="toggleSelectAll()" id="selectAllBtn" style="width:auto; height:auto; padding:6px 12px; font-size:11px; background:#34495e; color:white; border:none; border-radius:4px;">SELECT ALL</button>
     </div>
+    <div id="inventoryBody"></div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, writeBatch, getDoc, addDoc, serverTimestamp, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // --- PASTE YOUR FIREBASE CONFIG HERE ---
     const firebaseConfig = {
         apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
         authDomain: "footprint-shop.firebaseapp.com",
@@ -118,93 +133,132 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const prodRef = collection(db, "products");
 
-    document.getElementById("category").onchange = (e) => {
-        document.getElementById("subCatBox").style.display = (e.target.value === "Sleeper") ? "block" : "none";
-    };
+    // Build Sizes 4-12
+    const szBox = document.getElementById('sizeOptions');
+    for(let i=4; i<=12; i++) {
+        szBox.innerHTML += `<div class="size-item"><input type="checkbox" class="sz" value="${i}"> ${i}</div>`;
+    }
 
-    // Save Logic (Added sizeGuide)
-    document.getElementById("saveBtn").onclick = async () => {
-        const id = document.getElementById("prodId").value;
-        const name = document.getElementById("name").value;
-        const price = Number(document.getElementById("price").value);
-        const img = document.getElementById("img").value;
-        const sizeGuide = document.getElementById("sizeGuide").value;
-        const category = document.getElementById("category").value;
-        const subCategory = (category === "Sleeper") ? document.getElementById("subCategory").value : "";
-        const sizes = Array.from(document.querySelectorAll('.size-opt:checked')).map(el => el.value);
-
-        if(!name || !price || !img) return alert("Fill Name, Price & Image!");
-
-        const data = { 
-            name, price, 
-            discount: Number(document.getElementById("discount").value) || 0,
-            img, sizeGuide, category, subCategory, sizes, 
-            updated: serverTimestamp() 
-        };
-
-        try {
-            if(id) {
-                await updateDoc(doc(db, "products", id), data);
-                alert("✅ Updated!");
-            } else {
-                await addDoc(prodRef, data);
-                alert("✅ Added!");
-            }
-            location.reload();
-        } catch(e) { alert(e.message); }
-    };
-
-    // Real-time Sync
-    onSnapshot(prodRef, (snap) => {
-        document.getElementById("inventoryBody").innerHTML = snap.docs.map(docSnap => {
-            const p = docSnap.data();
-            const hasGuide = p.sizeGuide ? '✅ Yes' : '❌ No';
-            return `<tr>
-                <td><img src="${p.img}" width="40" height="40"></td>
-                <td>${p.name}</td>
-                <td>${hasGuide}</td>
-                <td>
-                    <button class="edit-btn" onclick="triggerEdit('${docSnap.id}')">Edit</button>
-                    <button class="del-btn" onclick="triggerDelete('${docSnap.id}')">Del</button>
-                </td>
-            </tr>`;
-        }).join('');
-    });
-
-    window.triggerEdit = async (id) => {
-        const docSnap = await getDoc(doc(db, "products", id));
-        if (docSnap.exists()) {
-            const p = docSnap.data();
-            document.getElementById("prodId").value = id;
-            document.getElementById("name").value = p.name;
-            document.getElementById("price").value = p.price;
-            document.getElementById("discount").value = p.discount || 0;
-            document.getElementById("img").value = p.img;
-            document.getElementById("sizeGuide").value = p.sizeGuide || "";
-            document.getElementById("category").value = p.category;
-            if(p.category === "Sleeper") {
-                document.getElementById("subCatBox").style.display = "block";
-                document.getElementById("subCategory").value = p.subCategory;
-            }
-            document.querySelectorAll('.size-opt').forEach(el => el.checked = p.sizes.includes(el.value));
-            document.getElementById("saveBtn").innerText = "UPDATE PRODUCT";
-            window.scrollTo(0,0);
+    // Load Settings on Start
+    const loadSettings = async () => {
+        const s = await getDoc(doc(db, "settings", "appearance"));
+        if(s.exists()){
+            const d = s.data();
+            document.getElementById('setBrand').value = d.brandName || '';
+            document.getElementById('setPromo').value = d.promoText || '';
+            document.getElementById('setBanner').value = d.bannerUrl || '';
+            document.getElementById('setTheme').value = d.themeColor || '#c0392b';
+            document.getElementById('setBg').value = d.bgColor || '#f4f7f6';
+            document.getElementById('setBtnColor').value = d.btnColor || '';
+            document.getElementById('setContact').value = d.whatsapp || '';
         }
     };
+    loadSettings();
 
-    window.triggerDelete = async (id) => {
-        if(confirm("Delete Product?")) await deleteDoc(doc(db, "products", id));
+    // Load Inventory
+    onSnapshot(collection(db, "products"), (snap) => {
+        const body = document.getElementById('inventoryBody');
+        body.innerHTML = snap.docs.map(d => {
+            const p = d.data();
+            return `
+            <div class="prod-row" id="row-${d.id}">
+                <input type="checkbox" class="item-chk check-box" value="${d.id}" onchange="updateSelectionUI()">
+                <img src="${p.img}" onerror="this.src='https://via.placeholder.com/60'">
+                <div style="flex-grow:1">
+                    <b style="font-size:14px;">${p.name}</b> ${p.isSoldOut ? '<span style="color:red; font-size:10px;">[SOLD OUT]</span>' : ''}<br>
+                    <small>Rs. ${p.price} | ${p.cat || 'General'}</small>
+                </div>
+                <div class="action-btns">
+                    <i class="fas fa-edit" style="color:#3498db" onclick="editProd('${d.id}')"></i>
+                    <i class="fas fa-trash-alt" style="color:#e74c3c" onclick="deleteSingle('${d.id}')"></i>
+                </div>
+            </div>`;
+        }).join('');
+        updateSelectionUI();
+    });
+
+    // Multi-Select & Bulk Logic
+    window.updateSelectionUI = () => {
+        const selected = document.querySelectorAll('.item-chk:checked');
+        const bar = document.getElementById('bulkBar');
+        document.getElementById('selCount').innerText = selected.length;
+        bar.style.display = selected.length > 0 ? 'flex' : 'none';
+        document.querySelectorAll('.prod-row').forEach(row => row.classList.remove('selected'));
+        selected.forEach(chk => document.getElementById(`row-${chk.value}`).classList.add('selected'));
     };
-    
-    document.getElementById("updateSettingsBtn").onclick = async () => {
+
+    window.toggleSelectAll = () => {
+        const checkboxes = document.querySelectorAll('.item-chk');
+        const allChecked = Array.from(checkboxes).every(c => c.checked);
+        checkboxes.forEach(c => c.checked = !allChecked);
+        updateSelectionUI();
+    };
+
+    window.bulkAction = async (status) => {
+        const ids = Array.from(document.querySelectorAll('.item-chk:checked')).map(c => c.value);
+        const batch = writeBatch(db);
+        ids.forEach(id => batch.update(doc(db, "products", id), { isSoldOut: status }));
+        await batch.commit();
+        alert("Success!");
+    };
+
+    window.bulkDelete = async () => {
+        if(!confirm("Delete selected?")) return;
+        const ids = Array.from(document.querySelectorAll('.item-chk:checked')).map(c => c.value);
+        const batch = writeBatch(db);
+        ids.forEach(id => batch.delete(doc(db, "products", id)));
+        await batch.commit();
+    };
+
+    window.deleteSingle = async (id) => { if(confirm("Delete this product?")) await deleteDoc(doc(db, "products", id)); };
+
+    // --- Save Functions ---
+    window.updateSiteSettings = async () => {
         await setDoc(doc(db, "settings", "appearance"), {
-            brandName: document.getElementById("setBrand").value,
-            promoText: document.getElementById("setPromo").value,
-            bannerUrl: document.getElementById("setBanner").value
+            brandName: document.getElementById('setBrand').value,
+            promoText: document.getElementById('setPromo').value,
+            bannerUrl: document.getElementById('setBanner').value,
+            themeColor: document.getElementById('setTheme').value,
+            bgColor: document.getElementById('setBg').value,
+            btnColor: document.getElementById('setBtnColor').value,
+            whatsapp: document.getElementById('setContact').value
         });
-        alert("✅ Looks Updated!");
+        alert("Appearance Updated!");
+    };
+
+    document.getElementById('saveBtn').onclick = async () => {
+        const id = document.getElementById('prodId').value;
+        const data = {
+            name: document.getElementById('name').value,
+            price: Number(document.getElementById('price').value),
+            discount: Number(document.getElementById('discount').value) || 0,
+            img: document.getElementById('imgUrl').value,
+            sizeGuide: document.getElementById('setSizeGuide').value,
+            cat: document.getElementById('setCat').value,
+            sizes: Array.from(document.querySelectorAll('.sz:checked')).map(el => el.value),
+            isSoldOut: document.getElementById('isSoldOut').checked,
+            updated: serverTimestamp()
+        };
+        if(id) await updateDoc(doc(db, "products", id), data);
+        else await addDoc(collection(db, "products"), data);
+        location.reload();
+    };
+
+    window.editProd = async (id) => {
+        const d = await getDoc(doc(db, "products", id));
+        const p = d.data();
+        document.getElementById('prodId').value = id;
+        document.getElementById('name').value = p.name;
+        document.getElementById('price').value = p.price;
+        document.getElementById('discount').value = p.discount || 0;
+        document.getElementById('imgUrl').value = p.img;
+        document.getElementById('setSizeGuide').value = p.sizeGuide || '';
+        document.getElementById('setCat').value = p.cat || 'Sports';
+        document.getElementById('isSoldOut').checked = p.isSoldOut || false;
+        document.querySelectorAll('.sz').forEach(el => el.checked = (p.sizes || []).includes(el.value));
+        document.getElementById('saveBtn').innerText = "UPDATE PRODUCT";
+        window.scrollTo(0,0);
     };
 </script>
 </body>
