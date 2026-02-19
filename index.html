@@ -7,79 +7,64 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #c0392b; --bg: #f8f9fa; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: #333; }
+        :root { --main: #c0392b; --bg: #f8f9fa; --card: #ffffff; --text: #2c3e50; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--text); padding-bottom: 70px; }
         
-        #promoBar { background: var(--main); color: white; font-size: 12px; padding: 6px; text-align: center; font-weight: bold; }
-        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        #brandName { font-size: 26px; font-weight: 800; letter-spacing: 2px; color: var(--main); margin: 0; text-transform: uppercase; }
+        /* Header */
+        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        #brandName { font-size: 24px; font-weight: 800; color: var(--main); margin: 0; text-transform: uppercase; }
 
-        .search-container { padding: 10px 15px; background: white; }
-        #searchInput { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; font-size: 14px; background: #f9f9f9; box-sizing: border-box; }
-        
-        .filter-box { display: flex; justify-content: flex-start; gap: 10px; padding: 10px 15px; overflow-x: auto; white-space: nowrap; background: white; border-bottom: 1px solid #eee; scrollbar-width: none; }
-        .filter-btn { padding: 8px 20px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.3s; flex-shrink: 0; }
+        /* Carousel */
+        .carousel-container { margin: 15px; position: relative; overflow: hidden; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: #fff; display: none; }
+        .ad-slide img { width: 100%; height: 160px; object-fit: cover; }
+        .ad-info { padding: 10px; text-align: center; }
+        .ad-btn-mini { background: #27ae60; color: white; padding: 5px 15px; border-radius: 15px; font-size: 12px; display: inline-block; margin-top: 5px; }
+
+        /* Search & Filter */
+        .search-container { padding: 0 15px; }
+        #searchInput { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; background: #fff; box-sizing: border-box; }
+        .filter-box { display: flex; gap: 10px; padding: 10px 15px; overflow-x: auto; scrollbar-width: none; }
+        .filter-btn { padding: 8px 20px; border-radius: 20px; border: 1px solid #ddd; background: white; font-weight: 600; flex-shrink: 0; cursor: pointer; }
         .filter-btn.active { background: var(--main); color: white; border-color: var(--main); }
 
-        .container { padding: 15px; max-width: 1200px; margin: auto; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        /* Product Grid */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 15px; }
         @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+        .card { background: var(--card); border-radius: 15px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; display: flex; flex-direction: column; }
+        .card img { width: 100%; height: 150px; object-fit: cover; }
+        .info { padding: 10px; flex-grow: 1; }
+        .p-cat { font-size: 10px; color: #888; text-transform: uppercase; }
+        .p-name { font-weight: 600; font-size: 13px; height: 36px; overflow: hidden; margin: 2px 0; }
+        .p-price { color: var(--main); font-weight: 800; font-size: 15px; }
+        .add-btn { width: 100%; background: #27ae60; color: white; border: none; padding: 10px; font-weight: bold; cursor: pointer; font-size: 12px; }
 
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; display: flex; flex-direction: column; border: 1px solid #f0f0f0; }
-        .sold-out-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-size: 10px; font-weight: bold; z-index: 2; }
-        
-        .card img { width: 100%; height: 180px; object-fit: cover; }
-        .info { padding: 12px; flex-grow: 1; }
-        .size-badge { background: #eee; color: #555; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; float: right; }
-        .category-tag { font-size: 10px; text-transform: uppercase; color: #888; font-weight: bold; }
-        .name { font-size: 14px; font-weight: 600; color: #222; margin: 4px 0; height: 40px; overflow: hidden; }
-        .curr-price { font-size: 17px; font-weight: 800; color: var(--main); }
-        
-        .buy-btn { width: 100%; background: #222; color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .buy-btn:disabled { background: #ccc; cursor: not-allowed; }
-        
-        .guide-link { font-size: 11px; text-decoration: underline; cursor: pointer; display: block; margin-top: 5px; color: #3498db; }
-        #noProducts { display: none; text-align: center; padding: 40px; color: #888; grid-column: 1 / -1; }
-
-        /* --- Ad Banner Styles --- */
-        #adBanner { background: #fff; border-radius: 15px; overflow: hidden; margin: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; text-align: center; border: 1px solid #f0f0f0; cursor: pointer; text-decoration: none; color: inherit; }
-        #adBanner img { width: 100%; height: 150px; object-fit: cover; }
-        #adBanner .ad-content { padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        #adBanner .ad-tag { background: var(--main); color: white; padding: 4px 10px; border-radius: 5px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        #adBanner .ad-title { font-size: 16px; font-weight: 700; color: #222; }
-        #adBanner .ad-description { font-size: 12px; color: #666; }
-        #adBanner .ad-button { background: #27ae60; color: white; padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; }
+        /* Cart Bar */
+        #cartBar { position: fixed; bottom: 0; width: 100%; background: var(--text); color: white; padding: 15px; text-align: center; font-weight: bold; display: none; cursor: pointer; z-index: 2000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
-<div id="promoBar">Loading Offers...</div>
 <header><h1 id="brandName">FOOTPRINT</h1></header>
 
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search shoes, slippers or sizes..." oninput="handleSearch()">
+<div id="adCarousel" class="carousel-container">
+    <div id="adContent"></div>
 </div>
 
-<div class="filter-box" id="categoryFilters">
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search shoes, sizes..." oninput="handleSearch()">
+</div>
+
+<div class="filter-box">
     <button class="filter-btn active" onclick="filterProducts('All', this)">All</button>
     <button class="filter-btn" onclick="filterProducts('Sports', this)">Sports</button>
     <button class="filter-btn" onclick="filterProducts('Casual', this)">Casual</button>
     <button class="filter-btn" onclick="filterProducts('slippers', this)">Slippers</button>
 </div>
 
-<a id="adBanner" href="#" target="_blank" onclick="trackClick()">
-    <img src="https://via.placeholder.com/400x150/e74c3c/ffffff?text=ADVERTISEMENT" alt="Ad Banner">
-    <div class="ad-content">
-        <span class="ad-tag">Sponsored</span>
-        <div class="ad-title">Check out our new Winter Collection!</div>
-        <div class="ad-description">Comfortable and stylish footwear for all seasons.</div>
-        <span class="ad-button"><i class="fas fa-shopping-bag"></i> Shop Now</span>
-    </div>
-</a>
+<div class="grid" id="productGrid"></div>
 
-<div class="container">
-    <div class="grid" id="productGrid"></div>
-    <div id="noProducts">No products found in this category.</div>
+<div id="cartBar" onclick="checkout()">
+    <i class="fas fa-shopping-cart"></i> View Cart (<span id="cartCount">0</span> items) - Checkout
 </div>
 
 <script type="module">
@@ -90,7 +75,7 @@
         apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
         authDomain: "footprint-shop.firebaseapp.com",
         projectId: "footprint-shop",
-        storageBucket: "footprint-shop.firebasestorage.app",
+        storageBucket: "footprint-shop.appspot.com",
         messagingSenderId: "16952304600",
         appId: "1:16952304600:web:7c8498522407a8dceb88ad"
     };
@@ -98,122 +83,95 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     let allOriginalProducts = [];
-    let currentCategory = 'All';
+    let cart = [];
 
-    // Settings Sync & Ad Control
+    // --- ADS LOGIC ---
     onSnapshot(doc(db, "settings", "appearance"), (s) => {
         if(s.exists()){
             const d = s.data();
-            if(d.brandName) document.getElementById("brandName").innerText = d.brandName;
-            if(d.promoText) document.getElementById("promoBar").innerText = d.promoText;
-            if(d.themeColor) document.documentElement.style.setProperty('--main', d.themeColor);
+            document.getElementById("brandName").innerText = d.brandName || "FOOTPRINT";
             
-            const adBanner = document.getElementById("adBanner");
-            if (d.adImg) adBanner.querySelector('img').src = d.adImg;
-            if (d.adTitle) adBanner.querySelector('.ad-title').innerText = d.adTitle;
-            if (d.adDescription) adBanner.querySelector('.ad-description').innerText = d.adDescription;
-            if (d.adLink) adBanner.href = d.adLink;
-            if (d.adBtnText) adBanner.querySelector('.ad-button').innerText = d.adBtnText;
-            if (d.adTag) adBanner.querySelector('.ad-tag').innerText = d.adTag;
-            adBanner.style.display = d.showAdBanner === false ? 'none' : 'flex';
+            if(d.showAdBanner && d.adImg) {
+                document.getElementById("adCarousel").style.display = "block";
+                document.getElementById("adContent").innerHTML = `
+                    <a href="${d.adLink || '#'}" target="_blank" onclick="trackAdClick()" style="text-decoration:none; color:inherit;">
+                        <img src="${d.adImg}">
+                        <div class="ad-info">
+                            <b>${d.adTitle || 'SPECIAL OFFER'}</b><br>
+                            <span class="ad-btn-mini">${d.adBtnText || 'View'}</span>
+                        </div>
+                    </a>
+                `;
+            } else {
+                document.getElementById("adCarousel").style.display = "none";
+            }
         }
     });
 
-    // Load Products
+    window.trackAdClick = async () => {
+        await updateDoc(doc(db, "settings", "appearance"), { adClicks: increment(1) });
+    };
+
+    // --- PRODUCTS & CART LOGIC ---
     onSnapshot(collection(db, "products"), (snap) => {
         allOriginalProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
-        handleSearch();
+        renderGrid(allOriginalProducts);
     });
 
     function renderGrid(products) {
         const grid = document.getElementById("productGrid");
-        const noProd = document.getElementById("noProducts");
-        
-        let displayItems = [];
-        products.forEach(p => {
-            if(p.sizes && p.sizes.length > 0) {
-                p.sizes.forEach(size => {
-                    displayItems.push({...p, currentDisplaySize: size});
-                });
-            } else {
-                displayItems.push({...p, currentDisplaySize: 'Free'});
-            }
-        });
-
-        if(displayItems.length === 0) {
-            grid.innerHTML = "";
-            noProd.style.display = "block";
-            return;
-        }
-        
-        noProd.style.display = "none";
-        grid.innerHTML = displayItems.map(p => {
-            const discPrice = p.discount > 0 ? Math.round(p.price - (p.price * p.discount / 100)) : p.price;
-            const soldOut = p.isSoldOut === true;
-
-            return `
-                <div class="card" style="opacity: ${soldOut ? '0.6' : '1'}">
-                    ${soldOut ? '<div class="sold-out-badge">OUT OF STOCK</div>' : ''}
-                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'">
-                    <div class="info">
-                        <span class="size-badge">UK ${p.currentDisplaySize}</span>
-                        <span class="category-tag">${p.cat || 'General'}</span>
-                        <div class="name">${p.name}</div>
-                        <div class="curr-price">₹${discPrice}</div>
-                        ${p.sizeGuide ? `<span class="guide-link" onclick="window.open('${p.sizeGuide}','_blank')">Size Guide</span>` : ''}
-                    </div>
-                    <button class="buy-btn" ${soldOut ? 'disabled' : ''} onclick="orderNow('${p.name}', '${discPrice}', '${p.currentDisplaySize}')">
-                        <i class="fab fa-whatsapp"></i> ${soldOut ? 'SOLD OUT' : 'BUY NOW'}
-                    </button>
-                </div>`;
-        }).join('');
+        grid.innerHTML = products.map(p => `
+            <div class="card">
+                <img src="${p.img}">
+                <div class="info">
+                    <div class="p-cat">${p.cat}</div>
+                    <div class="p-name">${p.name}</div>
+                    <div class="p-price">₹${p.price}</div>
+                </div>
+                <button class="add-btn" onclick="addToCart('${p.name}', ${p.price})">
+                    <i class="fas fa-cart-plus"></i> ADD TO CART
+                </button>
+            </div>
+        `).join('');
     }
+
+    window.addToCart = (name, price) => {
+        cart.push({name, price});
+        const bar = document.getElementById("cartBar");
+        bar.style.display = "block";
+        document.getElementById("cartCount").innerText = cart.length;
+        bar.style.animation = "none";
+        bar.offsetHeight;
+        bar.style.animation = "popup 0.3s ease";
+    };
+
+    window.checkout = () => {
+        if(cart.length === 0) return;
+        let msg = "Hello! I want to order:\n";
+        let total = 0;
+        cart.forEach(item => {
+            msg += `• ${item.name} - ₹${item.price}\n`;
+            total += item.price;
+        });
+        msg += `\n*Total: ₹${total}*`;
+        window.open(`https://wa.me/917003478789?text=${encodeURIComponent(msg)}`, '_blank');
+    };
 
     window.filterProducts = (cat, btn) => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentCategory = cat;
-        handleSearch();
+        const filtered = cat === 'All' ? allOriginalProducts : allOriginalProducts.filter(p => p.cat === cat);
+        renderGrid(filtered);
     };
 
     window.handleSearch = () => {
         const query = document.getElementById("searchInput").value.toLowerCase();
-        let filtered = allOriginalProducts;
-
-        if(currentCategory !== 'All') {
-            filtered = filtered.filter(p => {
-                const categoryValue = (p.cat || "").toLowerCase();
-                return categoryValue === currentCategory.toLowerCase();
-            });
-        }
-
-        if(query) {
-            filtered = filtered.filter(p => 
-                p.name.toLowerCase().includes(query) || 
-                (p.cat && p.cat.toLowerCase().includes(query)) ||
-                (p.sizes && p.sizes.join(',').includes(query))
-            );
-        }
+        const filtered = allOriginalProducts.filter(p => p.name.toLowerCase().includes(query) || p.cat.toLowerCase().includes(query));
         renderGrid(filtered);
     };
-
-    window.orderNow = (name, price, size) => {
-        const phone = "917003478789"; 
-        const text = `*NEW ORDER*\n*Product:* ${name}\n*Size:* UK ${size}\n*Price:* ₹${price}`;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
-    };
-
-    // --- Correct Place for trackClick function ---
-    window.trackClick = async () => {
-        try {
-            await updateDoc(doc(db, "settings", "appearance"), {
-                adClicks: increment(1)
-            });
-            console.log("Click Tracked!");
-        } catch (e) {
-            console.error("Tracking Error:", e);
-        }
-    };
 </script>
+<style>
+    @keyframes popup { 0% { transform: translateY(100%); } 100% { transform: translateY(0); } }
+</style>
 </body>
 </html>
