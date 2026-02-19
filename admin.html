@@ -8,61 +8,54 @@
     <style>
         :root { --primary: #2c3e50; --accent: #e74c3c; --success: #27ae60; --blue: #3498db; --bg: #f4f7f6; }
         body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 15px; }
-        
-        /* Stats Dashboard */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--blue); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid var(--blue); text-align: center; }
         .stat-card.clicks { border-left-color: var(--success); }
-        .stat-card h3 { margin: 0; font-size: 12px; color: #7f8c8d; text-transform: uppercase; }
-        .stat-card .value { font-size: 24px; font-weight: 800; color: var(--primary); margin-top: 5px; }
-
+        .stat-card.rev { border-left-color: #f39c12; }
+        .stat-card h3 { margin: 0; font-size: 10px; color: #7f8c8d; text-transform: uppercase; }
+        .stat-card .value { font-size: 20px; font-weight: 800; color: var(--primary); margin-top: 5px; }
         .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e0e0e0; }
         h2 { font-size: 1rem; color: var(--primary); border-bottom: 2px solid #f1f1f1; padding-bottom: 12px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
-        
         input, select, button { width: 100%; height: 48px; margin: 8px 0; border-radius: 10px; border: 1px solid #dcdde1; padding: 0 15px; font-size: 14px; box-sizing: border-box; transition: 0.3s; }
         input:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); }
-        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .btn-save { background: var(--blue); color: white; border: none; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-reset { background: #95a5a6; color: white; border: none; width: auto; height: 30px; font-size: 10px; padding: 0 10px; margin: 0; }
-        
+        .btn-reset { background: #95a5a6; color: white; border: none; width: auto; height: 25px; font-size: 9px; padding: 0 8px; margin-top: 5px; }
         .ad-toggle { background: #ebf5fb; padding: 15px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border: 1px solid #d6eaf8; }
-        
         .prod-item { display: flex; align-items: center; background: #fff; padding: 10px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #eee; }
         .prod-item img { width: 45px; height: 45px; border-radius: 8px; margin-right: 12px; object-fit: cover; }
+        .live-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; margin: 10px auto; display: none; border: 2px solid var(--blue); }
+        .gallery-btn { background: #f8f9fa; border: 1px dashed var(--blue); color: var(--blue); cursor: pointer; font-size: 12px; height: 35px; margin-top: -5px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; }
     </style>
 </head>
 <body>
 
 <div class="stats-grid">
-    <div class="stat-card">
-        <h3>Live Inventory</h3>
-        <div class="value" id="totalProds">0</div>
-    </div>
-    <div class="stat-card clicks">
-        <h3>Ad Clicks</h3>
-        <div class="value" id="adClicks">0</div>
-        <button class="btn-reset" onclick="resetClicks()">Reset Counter</button>
-    </div>
+    <div class="stat-card"><h3>Inventory</h3><div class="value" id="totalProds">0</div></div>
+    <div class="stat-card clicks"><h3>Clicks</h3><div class="value" id="adClicks">0</div><button class="btn-reset" id="resetBtn">Reset</button></div>
+    <div class="stat-card rev"><h3>Est. Revenue</h3><div class="value" id="totalRev">₹0</div></div>
 </div>
 
 <div class="box">
     <h2><i class="fas fa-bullhorn" style="color:var(--accent)"></i> Ad Revenue Manager</h2>
     <div class="ad-toggle">
-        <span style="font-weight: 600; font-size: 14px;">Active Ad Status</span>
+        <span style="font-weight: 600; font-size: 14px;">Ad Status</span>
         <input type="checkbox" id="showAdBanner" style="width:40px; height:20px; cursor:pointer;">
     </div>
     <div class="grid-2">
         <input type="text" id="adTag" placeholder="Badge (e.g. Sale)">
-        <input type="text" id="adTitle" placeholder="Catchy Headline">
+        <input type="text" id="adTitle" placeholder="Headline">
     </div>
-    <input type="text" id="adDescription" placeholder="Description / Offer details">
-    <input type="text" id="adImg" placeholder="Image URL (Clear & High Res)">
+    <input type="text" id="adDescription" placeholder="Description">
+    <input type="text" id="adImg" placeholder="Image URL" oninput="window.showPrev(this.value, 'adPrev')">
+    <input type="file" id="adFile" style="display:none" accept="image/*">
+    <div class="gallery-btn" onclick="document.getElementById('adFile').click()"><i class="fas fa-image"></i> Upload Ad</div>
+    <img id="adPrev" class="live-preview">
     <div class="grid-2">
         <input type="text" id="adBtnText" placeholder="Button Label">
-        <input type="text" id="adLink" placeholder="Where should it go? (Link)">
+        <input type="text" id="adLink" placeholder="Destination Link">
     </div>
-    <button class="btn-save" onclick="updateAdSettings()">Push Ad to Live Site</button>
+    <button class="btn-save" id="saveAdBtn">Push Ad to Live Site</button>
 </div>
 
 <div class="box">
@@ -73,14 +66,17 @@
         <input type="number" id="price" placeholder="Price (₹)">
         <input type="number" id="discount" placeholder="Discount %">
     </div>
-    <input type="text" id="imgUrl" placeholder="Product Image URL">
+    <input type="text" id="imgUrl" placeholder="Product Image URL" oninput="window.showPrev(this.value, 'prodPrev')">
+    <input type="file" id="prodFile" style="display:none" accept="image/*">
+    <div class="gallery-btn" onclick="document.getElementById('prodFile').click()"><i class="fas fa-camera"></i> Upload Photo</div>
+    <img id="prodPrev" class="live-preview">
     <div class="grid-2">
         <select id="setCat">
             <option value="Sports">Sports</option>
             <option value="Casual">Casual</option>
             <option value="slippers">Slippers</option>
         </select>
-        <input type="text" id="sizes" placeholder="Sizes (e.g. 7,8,9,10)">
+        <input type="text" id="sizes" placeholder="Sizes (e.g. 7,8,9)">
     </div>
     <button class="btn-save" id="saveBtn" style="background:var(--primary)">Publish Product</button>
 </div>
@@ -92,22 +88,51 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, getDoc, addDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
         authDomain: "footprint-shop.firebaseapp.com",
         projectId: "footprint-shop",
-        storageBucket: "footprint-shop.firebasestorage.app",
+        storageBucket: "footprint-shop.appspot.com",
         messagingSenderId: "16952304600",
         appId: "1:16952304600:web:7c8498522407a8dceb88ad"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    // --- TRACKING & SETTINGS ---
-    window.updateAdSettings = async () => {
+    window.showPrev = (url, id) => {
+        const el = document.getElementById(id);
+        if(url) { el.src = url; el.style.display = "block"; }
+        else { el.style.display = "none"; }
+    };
+
+    async function handleFileUpload(file, inputTargetId, previewId) {
+        if(!file) return;
+        const statusBtn = document.querySelector(`[onclick="document.getElementById('${file.id === 'adFile' ? 'adFile' : 'prodFile'}').click()"]`);
+        const originalText = statusBtn.innerHTML;
+        statusBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+        try {
+            const storageRef = ref(storage, 'footprint/' + Date.now() + "_" + file.name);
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+            document.getElementById(inputTargetId).value = url;
+            window.showPrev(url, previewId);
+            statusBtn.innerHTML = '<i class="fas fa-check"></i> Uploaded!';
+            setTimeout(() => statusBtn.innerHTML = originalText, 2000);
+        } catch (e) {
+            alert("Upload Failed!");
+            statusBtn.innerHTML = '<i class="fas fa-times"></i> Error';
+        }
+    }
+
+    document.getElementById('adFile').onchange = (e) => handleFileUpload(e.target.files[0], 'adImg', 'adPrev');
+    document.getElementById('prodFile').onchange = (e) => handleFileUpload(e.target.files[0], 'imgUrl', 'prodPrev');
+
+    document.getElementById('saveAdBtn').onclick = async () => {
         const data = {
             showAdBanner: document.getElementById('showAdBanner').checked,
             adTag: document.getElementById('adTag').value,
@@ -118,16 +143,13 @@
             adLink: document.getElementById('adLink').value
         };
         await updateDoc(doc(db, "settings", "appearance"), data);
-        alert("Success! Website Ad has been updated.");
+        alert("Ad Settings Updated!");
     };
 
-    window.resetClicks = async () => {
-        if(confirm("Zero out click data?")) {
-            await updateDoc(doc(db, "settings", "appearance"), { adClicks: 0 });
-        }
+    document.getElementById('resetBtn').onclick = async () => {
+        if(confirm("Reset click count?")) await updateDoc(doc(db, "settings", "appearance"), { adClicks: 0 });
     };
 
-    // --- REALTIME ANALYTICS ---
     onSnapshot(doc(db, "settings", "appearance"), (s) => {
         if(s.exists()){
             const d = s.data();
@@ -139,25 +161,48 @@
             document.getElementById('adImg').value = d.adImg || '';
             document.getElementById('adBtnText').value = d.adBtnText || '';
             document.getElementById('adLink').value = d.adLink || '';
+            if(d.adImg) window.showPrev(d.adImg, 'adPrev');
         }
     });
 
-    // --- PRODUCT MANAGEMENT ---
     onSnapshot(collection(db, "products"), (snap) => {
         document.getElementById('totalProds').innerText = snap.size;
+        let rev = 0;
         const body = document.getElementById('inventoryBody');
         body.innerHTML = snap.docs.map(d => {
             const p = d.data();
+            rev += Number(p.price);
             return `
             <div class="prod-item">
                 <img src="${p.img}">
                 <div style="flex-grow:1; font-size:13px;">
                     <b>${p.name}</b><br>₹${p.price} | ${p.cat}
                 </div>
-                <i class="fas fa-edit" style="color:var(--blue); cursor:pointer;" onclick="editProd('${d.id}')"></i>
+                <i class="fas fa-edit" style="color:var(--blue); cursor:pointer; margin-right:15px;" onclick="window.editProd('${d.id}')"></i>
+                <i class="fas fa-trash" style="color:var(--accent); cursor:pointer;" onclick="window.delProd('${d.id}')"></i>
             </div>`;
         }).join('');
+        document.getElementById('totalRev').innerText = "₹" + rev;
     });
+
+    window.editProd = async (id) => {
+        const d = await getDoc(doc(db, "products", id));
+        const p = d.data();
+        document.getElementById('prodId').value = id;
+        document.getElementById('name').value = p.name;
+        document.getElementById('price').value = p.price;
+        document.getElementById('discount').value = p.discount;
+        document.getElementById('imgUrl').value = p.img;
+        document.getElementById('setCat').value = p.cat;
+        document.getElementById('sizes').value = (p.sizes || []).join(',');
+        document.getElementById('saveBtn').innerText = "Update Now";
+        window.showPrev(p.img, 'prodPrev');
+        window.scrollTo(0,0);
+    };
+
+    window.delProd = async (id) => {
+        if(confirm("Delete this product?")) await deleteDoc(doc(db, "products", id));
+    };
 
     document.getElementById('saveBtn').onclick = async () => {
         const id = document.getElementById('prodId').value;
@@ -171,22 +216,8 @@
         };
         if(id) await updateDoc(doc(db, "products", id), data);
         else await addDoc(collection(db, "products"), data);
-        alert("Inventory Updated!");
+        alert("Success!");
         location.reload();
-    };
-
-    window.editProd = async (id) => {
-        const d = await getDoc(doc(db, "products", id));
-        const p = d.data();
-        document.getElementById('prodId').value = id;
-        document.getElementById('name').value = p.name;
-        document.getElementById('price').value = p.price;
-        document.getElementById('discount').value = p.discount;
-        document.getElementById('imgUrl').value = p.img;
-        document.getElementById('setCat').value = p.cat;
-        document.getElementById('sizes').value = (p.sizes || []).join(',');
-        document.getElementById('saveBtn').innerText = "Update Now";
-        window.scrollTo(0,0);
     };
 </script>
 </body>
