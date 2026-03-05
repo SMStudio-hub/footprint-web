@@ -3,73 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FootPrint Shop | Premium Footwear</title>
+    <title>FootPrint | Buy Premium Slippers & Sneakers Online India</title>
+    <meta name="description" content="FootPrint India - Get high-quality slippers and sneakers at factory prices. Free Shipping & Cash on Delivery available across India.">
+    <meta name="keywords" content="footwear india, buy slippers online, sneakers india, cash on delivery shoes, footprint store">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #c0392b; --bg: #f8f9fa; --card: #ffffff; --text: #2c3e50; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: var(--text); padding-bottom: 70px; }
+        :root { --main: #c0392b; --bg: #f8f9fa; --dark: #1a1a1a; --green: #27ae60; --gold: #f1c40f; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); color: #333; padding-bottom: 80px; scroll-behavior: smooth; }
         
-        /* Header */
-        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
-        #brandName { font-size: 24px; font-weight: 800; color: var(--main); margin: 0; text-transform: uppercase; }
+        /* Shipping Bar */
+        .shipping-bar { background: var(--dark); color: white; padding: 8px; font-size: 11px; text-align: center; font-weight: 600; overflow: hidden; position: relative; }
+        .shipping-bar span { display: inline-block; animation: slideText 12s linear infinite; white-space: nowrap; }
+        @keyframes slideText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* Carousel */
-        .carousel-container { margin: 15px; position: relative; overflow: hidden; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background: #fff; display: none; }
-        .ad-slide img { width: 100%; height: 160px; object-fit: cover; }
-        .ad-info { padding: 10px; text-align: center; }
-        .ad-btn-mini { background: #27ae60; color: white; padding: 5px 15px; border-radius: 15px; font-size: 12px; display: inline-block; margin-top: 5px; }
+        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        #brandName { font-size: 24px; font-weight: 800; color: var(--main); margin: 0; letter-spacing: 1px; }
 
-        /* Search & Filter */
-        .search-container { padding: 0 15px; }
-        #searchInput { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #ddd; outline: none; background: #fff; box-sizing: border-box; }
-        .filter-box { display: flex; gap: 10px; padding: 10px 15px; overflow-x: auto; scrollbar-width: none; }
-        .filter-btn { padding: 8px 20px; border-radius: 20px; border: 1px solid #ddd; background: white; font-weight: 600; flex-shrink: 0; cursor: pointer; }
-        .filter-btn.active { background: var(--main); color: white; border-color: var(--main); }
+        .hero-banner { background: white; margin: 12px; border-radius: 15px; overflow: hidden; display: flex; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee; min-height: 200px; }
+        .hero-img { width: 50%; background-size: cover; background-position: center; }
+        .hero-content { width: 50%; padding: 15px; display: flex; flex-direction: column; justify-content: center; background: #fff; }
+        .promo-badge { background: var(--main); color: white; font-size: 10px; padding: 3px 8px; border-radius: 4px; align-self: flex-start; margin-bottom: 8px; font-weight: 700; }
+        .hero-title { font-size: 17px; font-weight: 800; margin: 0; line-height: 1.2; }
+        .timer { font-size: 11px; color: var(--main); font-weight: 700; margin-top: 10px; border-top: 1px dashed #ddd; padding-top: 8px; }
 
-        /* Product Grid */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px 15px; }
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-        .card { background: var(--card); border-radius: 15px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 150px; object-fit: cover; }
-        .info { padding: 10px; flex-grow: 1; }
-        .p-cat { font-size: 10px; color: #888; text-transform: uppercase; }
-        .p-name { font-weight: 600; font-size: 13px; height: 36px; overflow: hidden; margin: 2px 0; }
-        .p-price { color: var(--main); font-weight: 800; font-size: 15px; }
-        .add-btn { width: 100%; background: #27ae60; color: white; border: none; padding: 10px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .search-box { padding: 10px 15px; }
+        #searchInput { width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid #ddd; outline: none; font-size: 14px; box-sizing: border-box; }
 
-        /* Cart Bar */
-        #cartBar { position: fixed; bottom: 0; width: 100%; background: var(--text); color: white; padding: 15px; text-align: center; font-weight: bold; display: none; cursor: pointer; z-index: 2000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .filter-wrap { display: flex; gap: 10px; padding: 5px 15px 15px; overflow-x: auto; scrollbar-width: none; }
+        .f-btn { padding: 8px 18px; border-radius: 20px; border: 1px solid #eee; background: white; font-size: 12px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
+        .f-btn.active { background: var(--main); color: white; border-color: var(--main); }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 12px; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; display: flex; flex-direction: column; position: relative; }
+        .card img { width: 100%; height: 160px; object-fit: contain; padding: 5px; background: #fff; }
+        .card-body { padding: 10px; flex-grow: 1; text-align: center; }
+        .stars { color: var(--gold); font-size: 10px; margin-bottom: 5px; }
+        .p-name { font-size: 12px; font-weight: 600; height: 34px; overflow: hidden; }
+        .p-price { font-size: 15px; font-weight: 800; color: var(--main); margin-top: 5px; }
+        .add-btn { background: var(--green); color: white; border: none; padding: 12px; font-size: 11px; font-weight: 700; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+        /* Review Section */
+        .reviews-section { padding: 20px 15px; background: #fff; margin-top: 20px; border-top: 1px solid #eee; }
+        .rev-card { background: var(--bg); padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--main); }
+        .rev-text { font-size: 11px; font-style: italic; color: #555; }
+        .rev-user { font-size: 12px; font-weight: 700; margin-top: 5px; display: block; }
+
+        /* India Trust Badges */
+        .trust-badges { background: #fff; padding: 25px 15px; text-align: center; border-top: 1px solid #eee; }
+        .badge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .badge-item { border: 1px dashed #ccc; padding: 10px; border-radius: 8px; }
+        .badge-item i { color: var(--main); font-size: 18px; margin-bottom: 5px; }
+        .badge-item p { font-size: 9px; font-weight: 700; margin: 0; text-transform: uppercase; }
+
+        /* National Sale Popup */
+        #sale-popup { position: fixed; bottom: 90px; left: 15px; background: white; padding: 10px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; z-index: 1000; transform: translateX(-150%); transition: 0.5s ease; border-left: 4px solid var(--green); }
+        
+        /* Professional Footer */
+        footer { background: var(--dark); color: white; padding: 40px 20px; text-align: left; margin-top: 30px; }
+        .footer-brand { color: var(--main); font-weight: 800; font-size: 20px; }
+        .footer-info { font-size: 11px; color: #bbb; margin: 10px 0; line-height: 1.6; }
+        .footer-social { margin: 15px 0; font-size: 18px; display: flex; gap: 15px; }
+        .footer-social i { color: white; }
+
+        #cartBar { position: fixed; bottom: 0; width: 100%; background: var(--dark); color: white; padding: 18px; text-align: center; font-weight: 700; z-index: 1000; cursor: pointer; display: none; }
+        .wa-float { position: fixed; bottom: 80px; right: 15px; background: #25d366; color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100; }
     </style>
 </head>
 <body>
 
+<div class="shipping-bar">
+    <span>🚚 FAST PAN-INDIA DELIVERY | FREE SHIPPING ON ORDERS ABOVE ₹499 | CASH ON DELIVERY AVAILABLE 👟</span>
+</div>
+
 <header><h1 id="brandName">FOOTPRINT</h1></header>
 
-<div id="adCarousel" class="carousel-container">
-    <div id="adContent"></div>
+<div class="hero-banner" id="heroBanner">
+    <div class="hero-img" id="bannerImg" style="background-image: url('https://i.ibb.co/VpM6f5S/shoes-banner.jpg');"></div>
+    <div class="hero-content">
+        <div class="promo-badge" id="bannerTag">INDIA'S CHOICE</div>
+        <h2 class="hero-title" id="bannerTitle">Premium Quality, Every Step.</h2>
+        <div class="timer"><i class="far fa-clock"></i> Offer ends in: <span id="timerText">04:59:59</span></div>
+    </div>
 </div>
 
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search shoes, sizes..." oninput="handleSearch()">
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search sneakers, flip-flops..." oninput="handleSearch()">
 </div>
 
-<div class="filter-box">
-    <button class="filter-btn active" onclick="filterProducts('All', this)">All</button>
-    <button class="filter-btn" onclick="filterProducts('Sports', this)">Sports</button>
-    <button class="filter-btn" onclick="filterProducts('Casual', this)">Casual</button>
-    <button class="filter-btn" onclick="filterProducts('slippers', this)">Slippers</button>
+<div class="filter-wrap">
+    <button class="f-btn active" onclick="filterBy('All', this)">All</button>
+    <button class="f-btn" onclick="filterBy('Sports', this)">Sports</button>
+    <button class="f-btn" onclick="filterBy('Casual', this)">Casual</button>
+    <button class="f-btn" onclick="filterBy('slippers', this)">Slippers</button>
 </div>
 
 <div class="grid" id="productGrid"></div>
 
-<div id="cartBar" onclick="checkout()">
-    <i class="fas fa-shopping-cart"></i> View Cart (<span id="cartCount">0</span> items) - Checkout
+<div class="trust-badges">
+    <h4 style="font-size: 13px; margin-bottom: 15px; color: #555;">SERVING HAPPY CUSTOMERS ALL OVER INDIA</h4>
+    <div class="badge-grid">
+        <div class="badge-item"><i class="fas fa-truck"></i><p>Free Shipping</p></div>
+        <div class="badge-item"><i class="fas fa-undo"></i><p>Easy Returns</p></div>
+        <div class="badge-item"><i class="fas fa-shield-alt"></i><p>Secure Shop</p></div>
+        <div class="badge-item"><i class="fas fa-wallet"></i><p>Pay on Delivery</p></div>
+    </div>
 </div>
+
+<div class="reviews-section">
+    <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">Customer Feedback</h3>
+    <div class="rev-card">
+        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <span class="rev-text">"Sahi mein quality bahut acchi hai. Delhi mein 3 din mein delivery mil gayi."</span>
+        <span class="rev-user">- Amit Sharma, Delhi</span>
+    </div>
+    <div class="rev-card">
+        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+        <span class="rev-text">"Premium look at very low price. Loved the comfort!"</span>
+        <span class="rev-user">- Priya M., Mumbai</span>
+    </div>
+</div>
+
+<div id="sale-popup">
+    <div style="background: var(--green); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-shopping-cart" style="font-size: 12px;"></i>
+    </div>
+    <div>
+        <p id="popup-text" style="font-size: 10px; margin: 0; font-weight: 700;">Someone just ordered!</p>
+        <p style="font-size: 9px; color: #888; margin: 0;">Verified Purchase 🇮🇳</p>
+    </div>
+</div>
+
+<footer>
+    <span class="footer-brand">FOOTPRINT™</span>
+    <p class="footer-info">FootPrint is India's fast-growing footwear brand. We focus on providing high-quality slippers and shoes at prices that don't hurt your pocket.</p>
+    
+    <div style="margin-top: 20px;">
+        <h4 style="font-size: 14px; color: var(--main); margin-bottom: 5px;">Support</h4>
+        <p style="font-size: 12px; margin: 3px 0;"><i class="fas fa-envelope"></i> help@footprint.in</p>
+        <p style="font-size: 12px; margin: 3px 0;"><i class="fas fa-map-marker-alt"></i> Based in Kolkata, Serving All India</p>
+    </div>
+
+    <div class="footer-social">
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-facebook-f"></i>
+        <i class="fab fa-whatsapp"></i>
+    </div>
+    
+    <p style="font-size: 9px; color: #555; border-top: 1px solid #333; padding-top: 15px;">&copy; 2026 FootPrint India Store. Built for Everyone.</p>
+</footer>
+
+<div id="cartBar" onclick="checkout()">VIEW CART (<span id="count">0</span>) & CHECKOUT</div>
+
+<a href="https://wa.me/917003478789" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
@@ -82,96 +173,90 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    let allOriginalProducts = [];
+    let masterData = [];
     let cart = [];
 
-    // --- ADS LOGIC ---
     onSnapshot(doc(db, "settings", "appearance"), (s) => {
         if(s.exists()){
             const d = s.data();
-            document.getElementById("brandName").innerText = d.brandName || "FOOTPRINT";
-            
-            if(d.showAdBanner && d.adImg) {
-                document.getElementById("adCarousel").style.display = "block";
-                document.getElementById("adContent").innerHTML = `
-                    <a href="${d.adLink || '#'}" target="_blank" onclick="trackAdClick()" style="text-decoration:none; color:inherit;">
-                        <img src="${d.adImg}">
-                        <div class="ad-info">
-                            <b>${d.adTitle || 'SPECIAL OFFER'}</b><br>
-                            <span class="ad-btn-mini">${d.adBtnText || 'View'}</span>
-                        </div>
-                    </a>
-                `;
+            if(d.showAdBanner) {
+                document.getElementById("bannerImg").style.backgroundImage = `url('${d.adImg}')`;
+                document.getElementById("bannerTag").innerText = d.adTag || "SALE";
+                document.getElementById("bannerTitle").innerText = d.adTitle || "Limited Offer";
             } else {
-                document.getElementById("adCarousel").style.display = "none";
+                document.getElementById("heroBanner").style.display = "none";
             }
         }
     });
 
-    window.trackAdClick = async () => {
-        await updateDoc(doc(db, "settings", "appearance"), { adClicks: increment(1) });
-    };
-
-    // --- PRODUCTS & CART LOGIC ---
     onSnapshot(collection(db, "products"), (snap) => {
-        allOriginalProducts = snap.docs.map(d => ({id: d.id, ...d.data()}));
-        renderGrid(allOriginalProducts);
+        masterData = snap.docs.map(d => ({id: d.id, ...d.data()}));
+        render(masterData);
     });
 
-    function renderGrid(products) {
-        const grid = document.getElementById("productGrid");
-        grid.innerHTML = products.map(p => `
+    function render(data) {
+        document.getElementById("productGrid").innerHTML = data.map(p => `
             <div class="card">
                 <img src="${p.img}">
-                <div class="info">
-                    <div class="p-cat">${p.cat}</div>
+                <div class="card-body">
+                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     <div class="p-name">${p.name}</div>
                     <div class="p-price">₹${p.price}</div>
                 </div>
                 <button class="add-btn" onclick="addToCart('${p.name}', ${p.price})">
-                    <i class="fas fa-cart-plus"></i> ADD TO CART
+                    <i class="fas fa-shopping-bag"></i> ORDER NOW
                 </button>
             </div>
         `).join('');
     }
 
+    // National Sale Notification Logic
+    const indiaCities = ["Mumbai", "Delhi", "Bangalore", "Pune", "Lucknow", "Patna", "Chennai", "Kolkata", "Ahmedabad", "Jaipur"];
+    function showSale() {
+        const city = indiaCities[Math.floor(Math.random()*indiaCities.length)];
+        document.getElementById("popup-text").innerText = `Recently ordered from ${city}, India!`;
+        const pop = document.getElementById("sale-popup");
+        pop.style.transform = "translateX(0)";
+        setTimeout(() => { pop.style.transform = "translateX(-150%)"; }, 4000);
+    }
+    setInterval(showSale, 18000);
+
     window.addToCart = (name, price) => {
         cart.push({name, price});
-        const bar = document.getElementById("cartBar");
-        bar.style.display = "block";
-        document.getElementById("cartCount").innerText = cart.length;
-        bar.style.animation = "none";
-        bar.offsetHeight;
-        bar.style.animation = "popup 0.3s ease";
+        document.getElementById("cartBar").style.display = "block";
+        document.getElementById("count").innerText = cart.length;
     };
 
     window.checkout = () => {
-        if(cart.length === 0) return;
-        let msg = "Hello! I want to order:\n";
+        let msg = "Hello FootPrint! I want to order from the National Store:\n\n";
         let total = 0;
-        cart.forEach(item => {
-            msg += `• ${item.name} - ₹${item.price}\n`;
+        cart.forEach((item, i) => {
+            msg += `${i+1}. ${item.name} - ₹${item.price}\n`;
             total += item.price;
         });
-        msg += `\n*Total: ₹${total}*`;
+        msg += `\n*Grand Total: ₹${total}*\n\nPlease confirm my order.`;
         window.open(`https://wa.me/917003478789?text=${encodeURIComponent(msg)}`, '_blank');
     };
 
-    window.filterProducts = (cat, btn) => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    window.filterBy = (cat, btn) => {
+        document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const filtered = cat === 'All' ? allOriginalProducts : allOriginalProducts.filter(p => p.cat === cat);
-        renderGrid(filtered);
+        render(cat === 'All' ? masterData : masterData.filter(p => p.cat === cat));
     };
 
     window.handleSearch = () => {
-        const query = document.getElementById("searchInput").value.toLowerCase();
-        const filtered = allOriginalProducts.filter(p => p.name.toLowerCase().includes(query) || p.cat.toLowerCase().includes(query));
-        renderGrid(filtered);
+        const q = document.getElementById("searchInput").value.toLowerCase();
+        render(masterData.filter(p => p.name.toLowerCase().includes(q)));
     };
+
+    let time = 18000; 
+    setInterval(() => {
+        time--;
+        let h = Math.floor(time / 3600);
+        let m = Math.floor((time % 3600) / 60);
+        let s = time % 60;
+        document.getElementById("timerText").innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }, 1000);
 </script>
-<style>
-    @keyframes popup { 0% { transform: translateY(100%); } 100% { transform: translateY(0); } }
-</style>
 </body>
 </html>
