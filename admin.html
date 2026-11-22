@@ -10,14 +10,15 @@
   :root { --primary: #2c3e50; --accent: #e74c3c; --success: #27ae60; --blue: #3498db; --gold: #d4af37; --bg: #f4f7f6; }
   body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; padding: 0 0 75px 0; }
   
-  #lockScreen { position: fixed; inset: 0; background: var(--primary); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 20px; }
-  #pinInput { width: 180px; text-align: center; font-size: 22px; letter-spacing: 8px; font-weight: 800; }
+  #lockScreen { position: fixed; inset: 0; background: var(--primary); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 20px; text-align: center; }
+  #pinInput { width: 190px; text-align: center; font-size: 22px; letter-spacing: 8px; font-weight: 800; }
 
-  /* Sticky Top Header & Tab Bar */
-  .admin-header { background: #111111; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 500; }
-  .admin-title { font-weight: 800; font-size: 16px; letter-spacing: 0.8px; }
+  .admin-header { background: #111111; color: white; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 500; gap: 6px; }
+  .admin-title { font-weight: 800; font-size: 15px; letter-spacing: 0.8px; }
   .admin-title span { color: var(--gold); }
-  .quick-add-pill { background: var(--success); color: white; border: none; border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 700; width: auto; height: auto; margin: 0; cursor: pointer; }
+  .header-btns { display: flex; gap: 6px; }
+  .quick-add-pill { background: var(--success); color: white; border: none; border-radius: 20px; padding: 5px 11px; font-size: 10.5px; font-weight: 700; width: auto; height: auto; margin: 0; cursor: pointer; }
+  .lock-pill { background: #334155; color: #f8fafc; border: none; border-radius: 20px; padding: 5px 10px; font-size: 10.5px; font-weight: 700; width: auto; height: auto; margin: 0; cursor: pointer; }
 
   .tab-bar { display: grid; grid-template-columns: repeat(5, 1fr); background: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 48px; z-index: 490; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
   .tab-btn { background: none; border: none; border-bottom: 3px solid transparent; border-radius: 0; height: 52px; margin: 0; padding: 4px 2px; font-size: 10px; font-weight: 700; color: #64748b; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; position: relative; }
@@ -81,16 +82,21 @@
 <body>
 
 <div id="lockScreen">
-  <i class="fas fa-lock" style="font-size:36px; margin-bottom:10px; color:#f1c40f;"></i>
-  <h3 style="margin:0 0 10px;">FOOTPRINT ADMIN LOCK</h3>
-  <input type="password" id="pinInput" maxlength="4" placeholder="••••">
-  <button onclick="unlockAdmin()" style="width:180px; background:var(--success); color:white; border:none; font-weight:700; cursor:pointer;">UNLOCK PANEL</button>
+  <i class="fas fa-shield-alt" style="font-size:38px; margin-bottom:10px; color:#f1c40f;"></i>
+  <h3 style="margin:0 0 6px;">FOOTPRINT ADMIN SECURITY LOCK</h3>
+  <p style="font-size:11px; color:#cbd5e1; margin:0 0 12px;">Default PIN: 1234 (Change anytime in Settings)</p>
+  <input type="password" id="pinInput" maxlength="8" placeholder="••••">
+  <button onclick="unlockAdmin()" style="width:190px; background:var(--success); color:white; border:none; font-weight:700; cursor:pointer;">UNLOCK PANEL</button>
+  <div id="lockStatusMsg" style="font-size:11px; color:#fca5a5; margin-top:8px;"></div>
 </div>
 
 <!-- Top Brand Bar -->
 <div class="admin-header">
   <div class="admin-title">FOOT<span>PRINT</span> ADMIN</div>
-  <button class="quick-add-pill" onclick="startNewListing()"><i class="fas fa-plus"></i> New Listing</button>
+  <div class="header-btns">
+    <button class="quick-add-pill" onclick="startNewListing()"><i class="fas fa-plus"></i> Listing</button>
+    <button class="lock-pill" onclick="lockAdminPanel()"><i class="fas fa-lock"></i> Lock</button>
+  </div>
 </div>
 
 <!-- 5-Tab Navigation Bar -->
@@ -145,23 +151,23 @@
     <input type="hidden" id="prodId">
     
     <label class="mini-lbl">1. Product Title *</label>
-    <input type="text" id="name" placeholder="e.g. Pack of 2 Soft EVA Flip Flops Combo">
+    <input type="text" id="name" maxlength="120" placeholder="e.g. Pack of 2 Soft EVA Flip Flops Combo">
     
     <div class="grid-2">
       <div>
         <label class="mini-lbl">2. Selling Price (₹) *</label>
-        <input type="number" id="price" placeholder="e.g. 185">
+        <input type="number" id="price" min="1" placeholder="e.g. 185">
       </div>
       <div>
         <label class="mini-lbl">3. MRP Strike Price (₹)</label>
-        <input type="number" id="discount" placeholder="e.g. 370 (for 50% off)">
+        <input type="number" id="discount" min="0" placeholder="e.g. 370 (for 50% off)">
       </div>
     </div>
 
     <div class="grid-2">
       <div>
         <label class="mini-lbl">4. Stock Qty (Pairs/Combos) *</label>
-        <input type="number" id="stock" placeholder="e.g. 25">
+        <input type="number" id="stock" min="0" placeholder="e.g. 25">
       </div>
       <div>
         <label class="mini-lbl">5. Category</label>
@@ -229,11 +235,11 @@
   </div>
 </div>
 
-<!-- TAB 5: SETTINGS (SIZE CHART, UPI, AD BANNER & VISITORS) -->
+<!-- TAB 5: SETTINGS (SIZE CHART, UPI QR, ADMIN PIN, AD BANNER & VISITORS) -->
 <div class="tab-pane" id="pane-settings">
-  <!-- Smart Auto-Converting Size Chart & UPI -->
+  <!-- Smart Auto-Converting Size Chart & UPI QR -->
   <div class="box">
-    <h2><span><i class="fas fa-ruler-combined" style="color:var(--accent);"></i> Smart Size Chart & UPI</span></h2>
+    <h2><span><i class="fas fa-ruler-combined" style="color:var(--accent);"></i> Smart Size Chart & UPI QR</span></h2>
     <p style="font-size:11px; color:#555; margin-top:-6px;">Sirf <b>Length in cm</b> edit kijiye—<b>UK & India, EU, aur USA</b> apne aap calculate ho jayenge!</p>
     
     <table class="sc-editor-table">
@@ -250,16 +256,27 @@
 
     <div class="grid-2">
       <div>
-        <label class="mini-lbl">Your UPI ID</label>
+        <label class="mini-lbl">Your UPI ID (For QR)</label>
         <input type="text" id="sc_upi" value="7003478789@ybl">
       </div>
       <div>
-        <label class="mini-lbl">Chart Bottom Note</label>
-        <input type="text" id="sc_note" value="Measure the length of your foot & compare values in the size chart.">
+        <label class="mini-lbl">Merchant / Store Name</label>
+        <input type="text" id="sc_merchant" value="FOOTPRINT Store">
       </div>
     </div>
 
-    <button class="btn-save" id="saveSizeChartBtn" style="background:var(--primary); margin-top:8px;">Save Size Chart & UPI</button>
+    <label class="mini-lbl">Chart Bottom Note</label>
+    <input type="text" id="sc_note" value="Measure the length of your foot & compare values in the size chart.">
+
+    <button class="btn-save" id="saveSizeChartBtn" style="background:var(--primary); margin-top:8px;">Save Size Chart & UPI QR</button>
+  </div>
+
+  <!-- Admin Security PIN Updater -->
+  <div class="box">
+    <h2><span><i class="fas fa-key" style="color:var(--accent);"></i> Admin Security PIN</span></h2>
+    <label class="mini-lbl">Set New 4-to-8 Digit Admin PIN</label>
+    <input type="password" id="newAdminPinInput" maxlength="8" placeholder="Enter new PIN (e.g. 4829)">
+    <button class="btn-save" id="saveAdminPinBtn" style="background:#1e293b;">Update Admin PIN</button>
   </div>
 
   <!-- Ad Banner Manager -->
@@ -301,9 +318,22 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, onSnapshot, doc, updateDoc, getDoc, addDoc, deleteDoc, setDoc, increment, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-  // Tab Switcher Logic
+  function safeText(val) {
+    return String(val ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeUrl(url) {
+    const u = String(url ?? '').trim();
+    if (/^(https?:\/\/|data:image\/(png|jpeg|jpg|webp);base64,)/i.test(u)) return u;
+    return 'https://via.placeholder.com/50';
+  }
+
   window.switchAdminTab = (tabName) => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
@@ -312,14 +342,57 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const ADMIN_PIN = "1234";
+  // PIN Security with Failed Attempt Cooldown
+  let activePin = localStorage.getItem('fp_custom_pin') || "1234";
+  let failedAttempts = 0;
+  let lockUntil = 0;
+
   window.unlockAdmin = () => {
-    if(document.getElementById('pinInput').value === ADMIN_PIN) {
+    const now = Date.now();
+    if (now < lockUntil) {
+      const secLeft = Math.ceil((lockUntil - now) / 1000);
+      document.getElementById('lockStatusMsg').innerText = `Too many wrong attempts! Wait ${secLeft}s.`;
+      return;
+    }
+    const entered = document.getElementById('pinInput').value.trim();
+    if(entered === activePin) {
+      failedAttempts = 0;
+      document.getElementById('lockStatusMsg').innerText = '';
+      document.getElementById('pinInput').value = '';
       document.getElementById('lockScreen').style.display = 'none';
       sessionStorage.setItem('fp_admin_unlocked', '1');
-    } else alert("Wrong PIN!");
+    } else {
+      failedAttempts++;
+      if (failedAttempts >= 4) {
+        lockUntil = Date.now() + 30000;
+        failedAttempts = 0;
+        document.getElementById('lockStatusMsg').innerText = "4 wrong PINs! Locked for 30 seconds.";
+      } else {
+        document.getElementById('lockStatusMsg').innerText = `Wrong PIN! Attempt ${failedAttempts}/4`;
+      }
+    }
   };
-  if(sessionStorage.getItem('fp_admin_unlocked') === '1') document.getElementById('lockScreen').style.display = 'none';
+
+  window.lockAdminPanel = () => {
+    sessionStorage.removeItem('fp_admin_unlocked');
+    document.getElementById('lockScreen').style.display = 'flex';
+  };
+
+  if(sessionStorage.getItem('fp_admin_unlocked') === '1') {
+    document.getElementById('lockScreen').style.display = 'none';
+  }
+
+  document.getElementById('saveAdminPinBtn').onclick = () => {
+    const nextPin = document.getElementById('newAdminPinInput').value.trim();
+    if (nextPin.length < 4 || !/^\d+$/.test(nextPin)) {
+      alert("Please enter a 4-to-8 digit numeric PIN.");
+      return;
+    }
+    activePin = nextPin;
+    localStorage.setItem('fp_custom_pin', nextPin);
+    document.getElementById('newAdminPinInput').value = '';
+    alert("Admin PIN Updated on this device!");
+  };
 
   const firebaseConfig = {
     apiKey: "AIzaSyBkz3peuigrkVL7GTG9o6lTyG8U9S8E-5A",
@@ -332,14 +405,16 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const storage = getStorage(app);
 
-  function compressImage(file, maxWidth = 800, quality = 0.82) {
-    return new Promise((resolve) => {
+  // Fast Image Compression to DataURL (Zero Storage Hang)
+  function compressToDataURL(file, maxWidth = 450, quality = 0.78) {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
+      reader.onerror = () => reject(new Error("File read failed"));
       reader.readAsDataURL(file);
       reader.onload = (event) => {
         const img = new Image();
+        img.onerror = () => reject(new Error("Invalid image"));
         img.src = event.target.result;
         img.onload = () => {
           const canvas = document.createElement('canvas');
@@ -347,8 +422,10 @@
           if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
           canvas.width = w; canvas.height = h;
           const ctx = canvas.getContext('2d');
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, w, h);
           ctx.drawImage(img, 0, 0, w, h);
-          canvas.toBlob((blob) => resolve(blob || file), 'image/jpeg', quality);
+          resolve(canvas.toDataURL('image/jpeg', quality));
         };
       };
     });
@@ -356,7 +433,7 @@
 
   window.showPrev = (url, id) => {
     const el = document.getElementById(id);
-    if(url) { el.src = url; el.style.display = "block"; }
+    if(url) { el.src = safeUrl(url); el.style.display = "block"; }
     else el.style.display = "none";
   };
 
@@ -364,18 +441,15 @@
     if(!file) return;
     const statusBtn = document.getElementById(btnId);
     const originalText = statusBtn.innerHTML;
-    statusBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Compressing & Uploading...';
+    statusBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Photo...';
     try {
-      const compressedBlob = await compressImage(file);
-      const storageRef = ref(storage, 'footprint/' + Date.now() + ".jpg");
-      await uploadBytes(storageRef, compressedBlob);
-      const url = await getDownloadURL(storageRef);
-      document.getElementById(inputTargetId).value = url;
-      window.showPrev(url, previewId);
-      statusBtn.innerHTML = '<i class="fas fa-check"></i> Photo Uploaded!';
+      const fastDataUrl = await compressToDataURL(file);
+      document.getElementById(inputTargetId).value = fastDataUrl;
+      window.showPrev(fastDataUrl, previewId);
+      statusBtn.innerHTML = '<i class="fas fa-check"></i> Ready! Click Publish';
       setTimeout(() => statusBtn.innerHTML = originalText, 2500);
     } catch (e) {
-      alert("Upload Error: Firebase Storage Rules check karein ya direct image URL paste karein.\n(" + e.message + ")");
+      alert("Photo load nahi ho payi: " + e.message);
       statusBtn.innerHTML = originalText;
     }
   }
@@ -395,16 +469,17 @@
     list.innerHTML = snap.docs.map(d => {
       const c = d.data();
       const pts = Number(c.points || 0);
+      const safeDocId = safeText(d.id);
       return `
       <div class="vip-row">
         <div>
-          <div style="font-weight:800; color:var(--gold); font-size:11px;">${c.cardNumber} &bull; ${c.phone}</div>
-          <div style="font-weight:700; font-size:13px;">${c.name}</div>
-          <div style="font-size:11px; color:#d1d5db;">Points: <b style="color:#fde047;">${pts} / 500</b> | Orders: ${c.ordersCount || 1} | Free Claimed: ${c.freeClaimedCount || 0}</div>
+          <div style="font-weight:800; color:var(--gold); font-size:11px;">${safeText(c.cardNumber)} &bull; ${safeText(c.phone)}</div>
+          <div style="font-weight:700; font-size:13px;">${safeText(c.name)}</div>
+          <div style="font-size:11px; color:#d1d5db;">Points: <b style="color:#fde047;">${pts} / 500</b> | Orders: ${Number(c.ordersCount || 1)} | Free Claimed: ${Number(c.freeClaimedCount || 0)}</div>
         </div>
         <div style="display:flex; flex-direction:column; gap:4px;">
-          <button class="vip-mini-btn" style="background:var(--success); color:white;" onclick="window.adjustVipPoints('${d.id}', 50)">+50 Pts</button>
-          <button class="vip-mini-btn" style="background:var(--accent); color:white;" onclick="window.adjustVipPoints('${d.id}', -50)">-50 Pts</button>
+          <button class="vip-mini-btn" style="background:var(--success); color:white;" onclick="window.adjustVipPoints('${safeDocId}', 50)">+50 Pts</button>
+          <button class="vip-mini-btn" style="background:var(--accent); color:white;" onclick="window.adjustVipPoints('${safeDocId}', -50)">-50 Pts</button>
         </div>
       </div>`;
     }).join('');
@@ -449,10 +524,10 @@
   function renderSizeEditor() {
     document.getElementById("scEditorBody").innerHTML = sizeMatrix.map((r, i) => `
       <tr>
-        <td><input type="text" value="${r.cm}" oninput="window.autoConvertCm(${i}, this.value)"></td>
-        <td><input type="text" class="auto-val" id="uk_${i}" value="${r.uk}" oninput="window.updateManualCell(${i}, 'uk', this.value)"></td>
-        <td><input type="text" class="auto-val" id="eu_${i}" value="${r.eu}" oninput="window.updateManualCell(${i}, 'eu', this.value)"></td>
-        <td><input type="text" class="auto-val" id="usa_${i}" value="${r.usa}" oninput="window.updateManualCell(${i}, 'usa', this.value)"></td>
+        <td><input type="text" value="${safeText(r.cm)}" oninput="window.autoConvertCm(${i}, this.value)"></td>
+        <td><input type="text" class="auto-val" id="uk_${i}" value="${safeText(r.uk)}" oninput="window.updateManualCell(${i}, 'uk', this.value)"></td>
+        <td><input type="text" class="auto-val" id="eu_${i}" value="${safeText(r.eu)}" oninput="window.updateManualCell(${i}, 'eu', this.value)"></td>
+        <td><input type="text" class="auto-val" id="usa_${i}" value="${safeText(r.usa)}" oninput="window.updateManualCell(${i}, 'usa', this.value)"></td>
       </tr>
     `).join('');
   }
@@ -461,8 +536,9 @@
   onSnapshot(doc(db, "settings", "sizechart"), (s) => {
     if(s.exists()) {
       const d = s.data();
-      if(d.rows && d.rows.length) { sizeMatrix = d.rows; renderSizeEditor(); }
+      if(Array.isArray(d.rows) && d.rows.length) { sizeMatrix = d.rows; renderSizeEditor(); }
       if(d.upiId) document.getElementById('sc_upi').value = d.upiId;
+      if(d.merchantName) document.getElementById('sc_merchant').value = d.merchantName;
       if(d.note !== undefined) document.getElementById('sc_note').value = d.note;
     }
   });
@@ -470,17 +546,18 @@
   document.getElementById('saveSizeChartBtn').onclick = async () => {
     await setDoc(doc(db, "settings", "sizechart"), {
       rows: sizeMatrix,
-      upiId: document.getElementById('sc_upi').value.trim(),
-      note: document.getElementById('sc_note').value.trim()
+      upiId: document.getElementById('sc_upi').value.trim().slice(0, 80),
+      merchantName: document.getElementById('sc_merchant').value.trim().slice(0, 60),
+      note: document.getElementById('sc_note').value.trim().slice(0, 180)
     }, { merge: true });
-    alert("Size Chart & UPI Updated on Live Website!");
+    alert("Size Chart, UPI QR & Conversions Updated on Live Website!");
   };
 
   // Live Orders & Profit
   let cachedOrders = [];
   function renderOrders() {
     const list = document.getElementById('ordersList');
-    const unitCost = Number(document.getElementById('unitCostInput').value) || 50;
+    const unitCost = Math.max(0, Number(document.getElementById('unitCostInput').value) || 50);
     let totalDeliveredSales = 0;
     let totalDeliveredItems = 0;
 
@@ -488,23 +565,23 @@
       list.innerHTML = '<div style="font-size:11px; color:#999; text-align:center;">No orders yet.</div>';
     } else {
       list.innerHTML = cachedOrders.map(o => {
-        const itemsSummary = (o.items || []).map(it => `${it.name} (${it.size})`).join(', ');
+        const itemsSummary = (Array.isArray(o.items) ? o.items : []).map(it => `${safeText(it.name)} (${safeText(it.size)})`).join(', ');
         if(o.status === "Delivered") {
           totalDeliveredSales += Number(o.grandTotal || 0);
-          totalDeliveredItems += (o.items || []).length;
+          totalDeliveredItems += (Array.isArray(o.items) ? o.items.length : 0);
         }
         return `
         <div class="order-card ${o.status === 'Delivered' ? 'delivered' : ''}">
           <div style="display:flex; justify-content:space-between;">
-            <b>#${o.orderId} - ${o.customerName}</b>
-            <span style="font-weight:800; color:var(--accent);">₹${o.grandTotal} (${o.paymentMode})</span>
+            <b>#${safeText(o.orderId)} - ${safeText(o.customerName)}</b>
+            <span style="font-weight:800; color:var(--accent);">₹${Number(o.grandTotal) || 0} (${safeText(o.paymentMode)})</span>
           </div>
-          <div style="color:#555; margin:3px 0;"><i class="fas fa-phone"></i> ${o.customerPhone} | ${o.address}</div>
-          ${o.vipCardNumber ? `<div style="color:#b45309; font-size:11px; font-weight:700;"><i class="fas fa-crown"></i> ${o.vipCardNumber} (+${o.earnedPoints || 0} Pts)</div>` : ''}
+          <div style="color:#555; margin:3px 0;"><i class="fas fa-phone"></i> ${safeText(o.customerPhone)} | ${safeText(o.address)}</div>
+          ${o.vipCardNumber ? `<div style="color:#b45309; font-size:11px; font-weight:700;"><i class="fas fa-crown"></i> ${safeText(o.vipCardNumber)} (+${Number(o.earnedPoints) || 0} Pts)</div>` : ''}
           <div style="color:#111; font-weight:600; margin:4px 0;">Items: ${itemsSummary}</div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-            <span style="font-size:10px; color:#777;">${o.date}</span>
-            <select onchange="window.updateOrderStatus('${o.docId}', this.value)" style="width:120px; height:28px; font-size:11px; margin:0; padding:0 6px;">
+            <span style="font-size:10px; color:#777;">${safeText(o.date)}</span>
+            <select onchange="window.updateOrderStatus('${safeText(o.docId)}', this.value)" style="width:120px; height:28px; font-size:11px; margin:0; padding:0 6px;">
               <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
               <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
               <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
@@ -529,6 +606,7 @@
   });
 
   window.updateOrderStatus = async (docId, newStatus) => {
+    if (!["Pending", "Shipped", "Delivered", "Cancelled"].includes(newStatus)) return;
     await updateDoc(doc(db, "orders", docId), { status: newStatus });
   };
 
@@ -536,10 +614,10 @@
   onSnapshot(doc(db, "analytics", "visitors"), (s) => {
     if(s.exists()) {
       const d = s.data();
-      document.getElementById('visTotal').innerText = d.totalVisits || 0;
-      document.getElementById('visMobile').innerText = d.mobileVisits || 0;
-      document.getElementById('visDesktop').innerText = d.desktopVisits || 0;
-      document.getElementById('visLast').innerText = d.lastVisit || "No visits yet";
+      document.getElementById('visTotal').innerText = Number(d.totalVisits || 0);
+      document.getElementById('visMobile').innerText = Number(d.mobileVisits || 0);
+      document.getElementById('visDesktop').innerText = Number(d.desktopVisits || 0);
+      document.getElementById('visLast').innerText = safeText(d.lastVisit || "No visits yet");
     }
   });
 
@@ -549,7 +627,7 @@
     if(snap.empty) { list.innerHTML = '<div style="font-size:11px; color:#999; text-align:center;">No logs yet.</div>'; return; }
     list.innerHTML = snap.docs.map(d => {
       const v = d.data();
-      return `<div class="log-row"><span><b>${v.device}</b> (${v.date})</span><span>${v.time}</span></div>`;
+      return `<div class="log-row"><span><b>${safeText(v.device)}</b> (${safeText(v.date)})</span><span>${safeText(v.time)}</span></div>`;
     }).join('');
   });
 
@@ -561,11 +639,11 @@
   document.getElementById('saveAdBtn').onclick = async () => {
     await setDoc(doc(db, "settings", "appearance"), {
       showAdBanner: document.getElementById('showAdBanner').checked,
-      adTag: document.getElementById('adTag').value,
-      adTitle: document.getElementById('adTitle').value,
-      adDescription: document.getElementById('adDescription').value,
-      adImg: document.getElementById('adImg').value,
-      adLink: document.getElementById('adLink').value
+      adTag: document.getElementById('adTag').value.trim().slice(0, 40),
+      adTitle: document.getElementById('adTitle').value.trim().slice(0, 80),
+      adDescription: document.getElementById('adDescription').value.trim().slice(0, 140),
+      adImg: document.getElementById('adImg').value.trim(),
+      adLink: document.getElementById('adLink').value.trim()
     }, { merge: true });
     alert("Hero Ad Banner Updated!");
   };
@@ -573,7 +651,7 @@
   onSnapshot(doc(db, "settings", "appearance"), (s) => {
     if(s.exists()){
       const d = s.data();
-      document.getElementById('adClicks').innerText = d.adClicks || 0;
+      document.getElementById('adClicks').innerText = Number(d.adClicks || 0);
       document.getElementById('showAdBanner').checked = d.showAdBanner !== false;
       document.getElementById('adTag').value = d.adTag || '';
       document.getElementById('adTitle').value = d.adTitle || '';
@@ -593,20 +671,21 @@
       const p = d.data();
       const qty = p.stock !== undefined ? Number(p.stock) : 1;
       totalStock += qty;
+      const safeId = safeText(d.id);
       return `
       <div class="prod-item">
-        <img src="${p.img}" onerror="this.src='https://via.placeholder.com/50'">
+        <img src="${safeUrl(p.img)}" onerror="this.src='https://via.placeholder.com/50'">
         <div style="flex-grow:1; font-size:12px;">
-          <b>${p.name}</b><br>
-          <span style="color:var(--accent); font-weight:700;">₹${p.price}</span> | ${p.cat}
+          <b>${safeText(p.name)}</b><br>
+          <span style="color:var(--accent); font-weight:700;">₹${Number(p.price) || 0}</span> | ${safeText(p.cat)}
           <div class="qty-ctrl">
             <span>Stock: <b>${qty}</b></span>
-            <button class="qty-btn" onclick="window.changeQty('${d.id}', -1)">-</button>
-            <button class="qty-btn" onclick="window.changeQty('${d.id}', 1)">+</button>
+            <button class="qty-btn" onclick="window.changeQty('${safeId}', -1)">-</button>
+            <button class="qty-btn" onclick="window.changeQty('${safeId}', 1)">+</button>
           </div>
         </div>
-        <i class="fas fa-edit" style="color:var(--blue); cursor:pointer; margin-right:14px; font-size:16px;" onclick="window.editProd('${d.id}')"></i>
-        <i class="fas fa-trash" style="color:var(--accent); cursor:pointer; font-size:16px;" onclick="window.delProd('${d.id}')"></i>
+        <i class="fas fa-edit" style="color:var(--blue); cursor:pointer; margin-right:14px; font-size:16px;" onclick="window.editProd('${safeId}')"></i>
+        <i class="fas fa-trash" style="color:var(--accent); cursor:pointer; font-size:16px;" onclick="window.delProd('${safeId}')"></i>
       </div>`;
     }).join('');
     document.getElementById('totalStockCount').innerText = totalStock;
@@ -639,6 +718,7 @@
 
   window.editProd = async (id) => {
     const d = await getDoc(doc(db, "products", id));
+    if(!d.exists()) return;
     const p = d.data();
     document.getElementById('prodId').value = id;
     document.getElementById('name').value = p.name || '';
@@ -648,7 +728,7 @@
     document.getElementById('imgUrl').value = p.img || '';
     document.getElementById('setCat').value = p.cat || 'Slippers';
     document.getElementById('badgeTag').value = p.badge || '';
-    const savedSizes = p.sizes || [];
+    const savedSizes = Array.isArray(p.sizes) ? p.sizes : [];
     document.querySelectorAll('.sz-chk').forEach(chk => { chk.checked = savedSizes.includes(chk.value); });
     document.getElementById('saveBtn').innerText = "Update Listing";
     const badge = document.getElementById('listingModeBadge');
@@ -665,17 +745,18 @@
   document.getElementById('saveBtn').onclick = async () => {
     const id = document.getElementById('prodId').value;
     const selectedSizes = Array.from(document.querySelectorAll('.sz-chk:checked')).map(c => c.value);
+    const priceVal = Number(document.getElementById('price').value);
     const data = {
-      name: document.getElementById('name').value.trim(),
-      price: Number(document.getElementById('price').value),
-      discount: Number(document.getElementById('discount').value) || 0,
-      stock: Number(document.getElementById('stock').value) || 0,
+      name: document.getElementById('name').value.trim().slice(0, 120),
+      price: priceVal,
+      discount: Math.max(0, Number(document.getElementById('discount').value) || 0),
+      stock: Math.max(0, Number(document.getElementById('stock').value) || 0),
       img: document.getElementById('imgUrl').value.trim(),
       cat: document.getElementById('setCat').value,
       badge: document.getElementById('badgeTag').value,
-      sizes: selectedSizes
+      sizes: selectedSizes.length ? selectedSizes : ["UK 7", "UK 8", "UK 9"]
     };
-    if(!data.name || !data.price) { alert("Product Name and Price are required!"); return; }
+    if(!data.name || isNaN(priceVal) || priceVal <= 0) { alert("Valid Product Name and Price (> 0) are required!"); return; }
     if(!data.img) { alert("Please upload a shoe photo or paste an image URL!"); return; }
 
     if(id) await updateDoc(doc(db, "products", id), data);
