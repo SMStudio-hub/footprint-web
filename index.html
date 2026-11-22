@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
 <title>FOOTPRINT™ | Premium Footwear Store India</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -63,7 +64,7 @@
   .header-tag { font-size: 10px; font-weight: 700; color: var(--dark); background: #f3f4f6; padding: 5px 9px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
   .header-tag.vip-btn { background: var(--dark); color: var(--gold); border-color: var(--gold); }
 
-  /* Multi-Slide Hero Promotion Carousel (50% Discount + VIP Loyalty + Combo Deals) */
+  /* Multi-Slide Hero Promotion Carousel */
   .hero-slider-wrap { margin: 14px; position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14); }
   .hero-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
   .hero-track::-webkit-scrollbar { display: none; }
@@ -184,7 +185,7 @@
   /* Modals */
   .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(4px); z-index: 2000; align-items: flex-end; justify-content: center; }
   .modal-bg.center { align-items: center; padding: 15px; }
-  .cart-sheet { background: white; width: 100%; max-height: 88vh; border-radius: 24px 24px 0 0; padding: 20px 18px; overflow-y: auto; }
+  .cart-sheet { background: white; width: 100%; max-height: 90vh; border-radius: 24px 24px 0 0; padding: 20px 18px; overflow-y: auto; }
   .popup-box { background: white; width: 100%; max-width: 420px; max-height: 88vh; border-radius: 20px; padding: 18px; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
 
   /* VIP Loyalty Card & Rules Styling */
@@ -229,6 +230,12 @@
   .vip-tnc-title { font-size: 11px; font-weight: 800; color: #854d0e; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
   .vip-tnc-list { margin: 0; padding-left: 16px; font-size: 10.5px; color: #713f12; line-height: 1.5; }
   .vip-tnc-list li { margin-bottom: 3px; }
+
+  /* UPI QR Scanner Box */
+  .qr-scan-box { background: #f0fdf4; border: 1.5px dashed #15803d; border-radius: 14px; padding: 12px; margin: 10px 0; text-align: center; }
+  .qr-img-wrap { background: white; padding: 8px; border-radius: 10px; display: inline-block; border: 1px solid #dcfce7; margin: 6px 0; }
+  .qr-img-wrap img { width: 150px; height: 150px; display: block; }
+  .upi-deep-btn { display: inline-block; background: #111827; color: #fde047; text-decoration: none; font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 8px; margin-top: 6px; }
 
   /* Shoe Zoom Lightbox Modal */
   .shoe-zoom-img { width: 100%; height: 260px; object-fit: contain; background: #fbfbfa; border-radius: 14px; border: 1px solid #eee; margin-top: 10px; padding: 8px; }
@@ -278,7 +285,7 @@
   </div>
 </header>
 
-<!-- Multi-Slide Hero Promotion Slider (Slide 1: 50% Off Ad | Slide 2: VIP Loyalty Promo | Slide 3: Combo + UPI Offer) -->
+<!-- Multi-Slide Hero Promotion Slider -->
 <div class="hero-slider-wrap" id="heroBannerWrap">
   <div class="hero-track" id="heroTrack" onscroll="onHeroScroll(this)">
     
@@ -318,7 +325,7 @@
       <div class="hero-content wide">
         <span class="promo-badge">COMBO SPECIAL</span>
         <h2 class="hero-title">2 Pairs Combo @ Best Price</h2>
-        <p class="hero-desc">Save big on family & daily wear packs + instant ₹15 off on UPI checkout.</p>
+        <p class="hero-desc">Save big on family & daily wear packs + instant ₹15 off on UPI QR checkout.</p>
         <span class="hero-cta-pill">Shop Combos Below ↓</span>
       </div>
     </div>
@@ -364,7 +371,7 @@
     <div class="badge-item"><i class="fas fa-crown"></i><p>VIP Loyalty Rewards</p></div>
     <div class="badge-item"><i class="fas fa-ruler-combined"></i><p>Verified Size Chart</p></div>
     <div class="badge-item"><i class="fas fa-shield-alt"></i><p>100% Quality Check</p></div>
-    <div class="badge-item"><i class="fas fa-wallet"></i><p>UPI & COD Available</p></div>
+    <div class="badge-item"><i class="fas fa-qrcode"></i><p>UPI QR & COD</p></div>
   </div>
 </div>
 
@@ -393,7 +400,7 @@
   <i class="fas fa-shopping-bag"></i> &nbsp;VIEW BAG (<span id="count">0</span>) & CHECKOUT
 </div>
 
-<!-- VIP Loyalty Card Modal (With Step-by-Step Guide & Terms & Conditions) -->
+<!-- VIP Loyalty Card Modal -->
 <div id="loyaltyModal" class="modal-bg center" onclick="if(event.target===this) closeLoyaltyModal()">
   <div class="popup-box">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:8px;">
@@ -402,7 +409,7 @@
     </div>
 
     <div style="display:flex; gap:6px; margin-top:10px;">
-      <input type="tel" id="vipLookupPhone" class="cust-input" style="margin:0;" placeholder="Enter 10-digit Mobile Number">
+      <input type="tel" id="vipLookupPhone" class="cust-input" style="margin:0;" maxlength="10" placeholder="Enter 10-digit Mobile Number">
       <button onclick="lookupLoyaltyCard()" style="background:var(--dark); color:var(--gold); border:none; border-radius:10px; padding:0 14px; font-weight:700; font-size:12px; cursor:pointer;">Check</button>
     </div>
 
@@ -413,7 +420,6 @@
       </div>
     </div>
 
-    <!-- Step-by-Step Guide: How to Earn & Get Free Footwear -->
     <div class="vip-steps-box">
       <div class="vip-steps-title"><i class="fas fa-list-ol" style="color:var(--main);"></i> Kaise Milega Free Footwear? (Steps)</div>
       <div class="step-item">
@@ -430,13 +436,12 @@
       </div>
     </div>
 
-    <!-- Terms & Conditions -->
     <div class="vip-tnc-box">
       <div class="vip-tnc-title"><i class="fas fa-file-contract"></i> Terms & Conditions</div>
       <ul class="vip-tnc-list">
         <li>VIP Card sirf aapke registered <b>10-digit mobile number</b> se hi valid rahega (non-transferable).</li>
         <li>Points order deliver hone ke baad valid maane jayenge; order cancel ya return hone par us order ke points minus ho jayenge.</li>
-        <li>500 Points redeem karne par aapko selected daily-wear collection mein se <b>1 Pair Footwear bilkul FREE</b> milega (sirf standard delivery charge lagu ho sakta hai).</li>
+        <li>500 Points redeem karne par aapko selected daily-wear collection mein se <b>1 Pair Footwear bilkul FREE</b> milega (standard delivery charge lagu ho sakta hai).</li>
         <li>Points ki validity card issue hone ki date se <b>12 months (1 saal)</b> tak rahegi.</li>
       </ul>
     </div>
@@ -480,7 +485,7 @@
   </div>
 </div>
 
-<!-- Cart & Checkout Drawer -->
+<!-- Cart & Checkout Drawer (With Dynamic UPI QR Scanner) -->
 <div id="cartModal" class="modal-bg" onclick="if(event.target===this) closeCart()">
   <div class="cart-sheet">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px;">
@@ -492,7 +497,7 @@
     <div style="font-size:11px; font-weight:700; margin-top:8px;">Select Payment Method:</div>
     <div class="pay-options">
       <div class="pay-card active" id="payUPI" onclick="setPaymentMode('UPI')">
-        <i class="fas fa-qrcode"></i> Pay via UPI
+        <i class="fas fa-qrcode"></i> Pay via UPI QR
         <small style="color:var(--green);">Extra ₹15 Instant Off!</small>
       </div>
       <div class="pay-card" id="payCOD" onclick="setPaymentMode('COD')">
@@ -501,11 +506,21 @@
       </div>
     </div>
 
+    <!-- UPI QR Scanner Section -->
+    <div class="qr-scan-box" id="upiQrBox">
+      <div style="font-size:11.5px; font-weight:800; color:#14532d;"><i class="fas fa-qrcode"></i> Scan UPI QR or Tap to Pay</div>
+      <div class="qr-img-wrap">
+        <img id="upiQrImg" src="" alt="UPI Payment QR">
+      </div>
+      <div style="font-size:11px; color:#166534; font-weight:700;">UPI ID: <span id="upiDisplayId">7003478789@ybl</span> | Pay: <span id="upiPayAmount">₹0</span></div>
+      <a id="upiIntentLink" href="#" class="upi-deep-btn"><i class="fas fa-mobile-alt"></i> Open UPI App (GPay / PhonePe / Paytm)</a>
+    </div>
+
     <div id="billSummary" style="background:#f9fafb; padding:10px 12px; border-radius:12px; font-size:12px; margin-bottom:10px; border:1px solid #eee;"></div>
     
-    <input type="text" id="custName" class="cust-input" placeholder="Your Full Name (For VIP Card) *">
-    <input type="tel" id="custPhone" class="cust-input" placeholder="10-Digit Mobile Number (Card ID) *">
-    <input type="text" id="custAddress" class="cust-input" placeholder="Full Delivery Address & Pincode *">
+    <input type="text" id="custName" class="cust-input" maxlength="80" placeholder="Your Full Name (For VIP Card) *">
+    <input type="tel" id="custPhone" class="cust-input" maxlength="14" placeholder="10-Digit Mobile Number (Card ID) *">
+    <input type="text" id="custAddress" class="cust-input" maxlength="220" placeholder="Full Delivery Address & Pincode *">
     
     <button id="placeOrderBtn" onclick="checkout()" style="width:100%; background:var(--green); color:white; border:none; padding:14px; border-radius:12px; font-weight:700; font-size:13.5px; cursor:pointer; margin-top:6px;">
       <i class="fab fa-whatsapp"></i> PLACE ORDER & GET VIP POINTS
@@ -550,6 +565,22 @@
   let currentAdLink = "";
   let paymentMode = "UPI";
 
+  // Security Helper: Safe text escaping to prevent HTML/Script injection
+  function safeText(val) {
+    return String(val ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeUrl(url) {
+    const u = String(url ?? '').trim();
+    if (/^(https?:\/\/|data:image\/(png|jpeg|jpg|webp);base64,)/i.test(u)) return u;
+    return 'https://via.placeholder.com/200?text=FOOTPRINT';
+  }
+
   // Hero Slider Auto-Advance & Dot Sync
   let currentHeroIdx = 0;
   window.slideHero = (idx) => {
@@ -577,7 +608,7 @@
 
   function renderVipCardUI(card) {
     activeVipCard = card;
-    const pts = Number(card.points || 0);
+    const pts = Math.max(0, Number(card.points || 0));
     const pct = Math.min(100, Math.round((pts / FREE_SHOE_TARGET) * 100));
     const remaining = Math.max(0, FREE_SHOE_TARGET - pts);
     const unlocked = pts >= FREE_SHOE_TARGET;
@@ -588,14 +619,14 @@
           <div class="vip-logo">FOOT<span>PRINT</span></div>
           <span class="vip-chip"><i class="fas fa-crown"></i> VIP MEMBER</span>
         </div>
-        <div class="vip-holder">${card.name}</div>
-        <div class="vip-id">CARD NO: ${card.cardNumber} &bull; ${card.phone}</div>
+        <div class="vip-holder">${safeText(card.name)}</div>
+        <div class="vip-id">CARD NO: ${safeText(card.cardNumber)} &bull; ${safeText(card.phone)}</div>
         <div class="vip-progress-wrap">
           <div class="vip-progress-bar" style="width:${pct}%"></div>
         </div>
         <div class="vip-stats-row">
           <span>Points: <b style="color:var(--gold);">${pts} / ${FREE_SHOE_TARGET}</b></span>
-          <span>Orders: <b>${card.ordersCount || 1}</b></span>
+          <span>Orders: <b>${Number(card.ordersCount || 1)}</b></span>
         </div>
       </div>
       <div style="margin-top:10px; text-align:center;">
@@ -628,15 +659,16 @@
     } else {
       document.getElementById("vipCardArea").innerHTML = `
         <div style="text-align:center; padding:14px; font-size:12px; color:#555; background:#fefce8; border-radius:10px; margin-top:10px; border:1px solid #fef08a;">
-          No VIP Card found for <b>${raw}</b> yet.<br>Place your first order today to issue your card instantly!
+          No VIP Card found for <b>${safeText(raw)}</b> yet.<br>Place your first order today to issue your card instantly!
         </div>`;
     }
   };
 
   window.claimFreeFootwear = async () => {
-    if(!activeVipCard || activeVipCard.points < FREE_SHOE_TARGET) return;
-    const size = prompt("Which UK Size do you want for your FREE Footwear? (e.g., UK 7, UK 8, UK 9)", "UK 8");
-    if(!size) return;
+    if(!activeVipCard || Number(activeVipCard.points || 0) < FREE_SHOE_TARGET) return;
+    const rawSize = prompt("Which UK Size do you want for your FREE Footwear? (e.g., UK 7, UK 8, UK 9)", "UK 8");
+    if(!rawSize) return;
+    const size = safeText(rawSize.trim().slice(0, 15));
 
     await updateDoc(doc(db, "loyalty_cards", activeVipCard.phone), {
       points: increment(-FREE_SHOE_TARGET),
@@ -655,7 +687,7 @@
     { name: "Rahul Verma", city: "Lucknow", stars: "★★★★★", text: "VIP Loyalty Card bhi mil gaya pehle order par! Points collect karke next free pair lunga." },
     { name: "Sneha Patil", city: "Pune", stars: "★★★★★", text: "Papa ke liye acupressure slipper mangwayi thi, unhe bahut aaram mila. Packaging bhi solid thi." },
     { name: "Vikram Rathore", city: "Jaipur", stars: "★★★★☆", text: "Grip bahut strong hai, baarish aur tiles par bilkul slip nahi hota. Paisa vasool product." },
-    { name: "Ananya Das", city: "Bhubaneswar", stars: "★★★★★", text: "UPI se pay kiya toh ₹15 extra off bhi mila aur 3 din mein parcel mil gaya. Great service!" },
+    { name: "Ananya Das", city: "Bhubaneswar", stars: "★★★★★", text: "UPI QR se pay kiya toh ₹15 extra off bhi mila aur 3 din mein parcel mil gaya. Great service!" },
     { name: "Suresh Nair", city: "Bangalore", stars: "★★★★★", text: "Lightweight EVA material hai, pura din pehenne par bhi pair mein dard nahi hota." },
     { name: "Md. Tariq", city: "Patna", stars: "★★★★★", text: "Pack of 2 combo mangwaya tha, dono colors bilkul photo jaise hi aaye. Best budget store." }
   ];
@@ -667,16 +699,16 @@
     revIndex = (revIndex + 2) % customerReviewsPool.length;
     document.getElementById("reviewsContainer").innerHTML = [r1, r2].map(r => `
       <div class="rev-card">
-        <div class="stars">${r.stars}</div>
-        <span class="rev-text">"${r.text}"</span>
-        <span class="rev-user"><i class="fas fa-check-circle" style="color:var(--green);"></i> ${r.name}, ${r.city}</span>
+        <div class="stars">${safeText(r.stars)}</div>
+        <span class="rev-text">"${safeText(r.text)}"</span>
+        <span class="rev-user"><i class="fas fa-check-circle" style="color:var(--green);"></i> ${safeText(r.name)}, ${safeText(r.city)}</span>
       </div>
     `).join('');
   };
   rotateReviews();
   setInterval(rotateReviews, 12000);
 
-  // Size Chart Data
+  // Size Chart & UPI Data
   let sizeRows = [
     { cm: "23.40-24.10", uk: "5", eu: "39", usa: "5.5" },
     { cm: "24.20-24.90", uk: "6", eu: "40", usa: "6.5" },
@@ -688,22 +720,25 @@
   ];
   let chartMeta = {
     note: "Measure the length of your foot & compare values in the size chart.",
-    upiId: "7003478789@ybl"
+    upiId: "7003478789@ybl",
+    merchantName: "FOOTPRINT Store"
   };
 
   onSnapshot(doc(db, "settings", "sizechart"), (s) => {
     if(s.exists()) {
       const d = s.data();
-      if(d.rows && d.rows.length) sizeRows = d.rows;
+      if(Array.isArray(d.rows) && d.rows.length) sizeRows = d.rows;
       if(d.note !== undefined) chartMeta.note = d.note;
       if(d.upiId) chartMeta.upiId = d.upiId;
+      if(d.merchantName) chartMeta.merchantName = d.merchantName;
       renderFullChartHTML();
       if(masterData.length) render(masterData);
+      if(document.getElementById("cartModal").style.display === "flex") renderCartModal();
     }
   });
 
   function buildFullSizeChartMarkup() {
-    const tbody = sizeRows.map(r => `<tr><td>${r.cm}</td><td>${r.uk}</td><td>${r.eu}</td><td>${r.usa}</td></tr>`).join('');
+    const tbody = sizeRows.map(r => `<tr><td>${safeText(r.cm)}</td><td>${safeText(r.uk)}</td><td>${safeText(r.eu)}</td><td>${safeText(r.usa)}</td></tr>`).join('');
     return `
       <div class="full-chart-layout">
         <div class="foot-diagram-col">
@@ -748,22 +783,25 @@
   window.openShoeZoom = (prodId) => {
     const p = masterData.find(x => x.id === prodId);
     if(!p) return;
-    const sizes = (p.sizes && p.sizes.length && p.sizes[0] !== "") ? p.sizes : ["UK 7", "UK 8", "UK 9"];
+    const sizes = (Array.isArray(p.sizes) && p.sizes.length && p.sizes[0] !== "") ? p.sizes : ["UK 7", "UK 8", "UK 9"];
     if (!selectedSizes[p.id]) selectedSizes[p.id] = sizes[0];
     const outOfStock = (p.stock !== undefined && Number(p.stock) <= 0);
+    const cleanImg = safeUrl(p.img);
+    const priceNum = Math.max(0, Number(p.price) || 0);
+    const discNum = Math.max(0, Number(p.discount) || 0);
 
-    document.getElementById("szmTitle").innerText = p.name;
-    document.getElementById("szmImg").src = p.img;
-    document.getElementById("szmPrice").innerHTML = `₹${p.price} ${p.discount > p.price ? `<span class="p-mrp">₹${p.discount}</span>` : ''}`;
+    document.getElementById("szmTitle").innerText = p.name || "Product Preview";
+    document.getElementById("szmImg").src = cleanImg;
+    document.getElementById("szmPrice").innerHTML = `₹${priceNum} ${discNum > priceNum ? `<span class="p-mrp">₹${discNum}</span>` : ''}`;
     document.getElementById("szmSizes").innerHTML = sizes.map(s => `
-      <span class="sz-pill ${selectedSizes[p.id] === s ? 'selected' : ''}" onclick="pickModalSize('${p.id}', '${s}', this)">${s}</span>
+      <span class="sz-pill ${selectedSizes[p.id] === s ? 'selected' : ''}" onclick="pickModalSize('${safeText(p.id)}', '${safeText(s)}', this)">${safeText(s)}</span>
     `).join('');
 
     const addBtn = document.getElementById("szmAddBtn");
     addBtn.className = `add-btn ${outOfStock ? 'oos' : ''}`;
     addBtn.disabled = outOfStock;
     addBtn.innerHTML = `<i class="fas fa-shopping-bag"></i> ${outOfStock ? 'OUT OF STOCK' : 'ADD TO BAG'}`;
-    addBtn.onclick = () => { addToCart(p.id, p.name, p.price); closeShoeZoom(); };
+    addBtn.onclick = () => { addToCart(p.id, p.name, priceNum); closeShoeZoom(); };
 
     switchZoomTab('shoe');
     document.getElementById("shoeZoomModal").style.display = "flex";
@@ -819,7 +857,7 @@
     if(s.exists()){
       const d = s.data();
       if(d.showAdBanner !== false) {
-        if(d.adImg) document.getElementById("bannerImg").style.backgroundImage = `url('${d.adImg}')`;
+        if(d.adImg) document.getElementById("bannerImg").style.backgroundImage = `url('${safeUrl(d.adImg)}')`;
         if(d.adTag) document.getElementById("bannerTag").innerText = d.adTag;
         if(d.adTitle) document.getElementById("bannerTitle").innerText = d.adTitle;
         if(d.adDescription) document.getElementById("bannerDesc").innerText = d.adDescription;
@@ -830,7 +868,9 @@
 
   window.handleAdClick = async () => {
     try { await updateDoc(doc(db, "settings", "appearance"), { adClicks: increment(1) }); } catch(e){}
-    if(currentAdLink) window.open(currentAdLink, '_blank');
+    if(currentAdLink && /^https?:\/\//i.test(currentAdLink.trim())) {
+      window.open(currentAdLink.trim(), '_blank', 'noopener,noreferrer');
+    }
   };
 
   onSnapshot(collection(db, "products"), (snap) => {
@@ -845,7 +885,7 @@
   };
 
   function getMiniChartHtml() {
-    const rowsHtml = sizeRows.slice(0, 6).map(r => `<tr><td>${r.cm}</td><td>${r.uk}</td><td>${r.eu}</td><td>${r.usa}</td></tr>`).join('');
+    const rowsHtml = sizeRows.slice(0, 6).map(r => `<tr><td>${safeText(r.cm)}</td><td>${safeText(r.uk)}</td><td>${safeText(r.eu)}</td><td>${safeText(r.usa)}</td></tr>`).join('');
     return `
       <div class="mini-chart-slide" onclick="openSizeModal()">
         <div class="mini-chart-head">Men's Shoes Size Chart (Tap to Zoom)</div>
@@ -872,35 +912,40 @@
   function render(data) {
     const miniChart = getMiniChartHtml();
     document.getElementById("productGrid").innerHTML = data.map(p => {
-      const sizes = (p.sizes && p.sizes.length && p.sizes[0] !== "") ? p.sizes : ["UK 7", "UK 8", "UK 9"];
+      const sizes = (Array.isArray(p.sizes) && p.sizes.length && p.sizes[0] !== "") ? p.sizes : ["UK 7", "UK 8", "UK 9"];
       if (!selectedSizes[p.id]) selectedSizes[p.id] = sizes[0];
       const outOfStock = (p.stock !== undefined && Number(p.stock) <= 0);
-      const mrpHtml = (p.discount && Number(p.discount) > Number(p.price)) ? `<span class="p-mrp">₹${p.discount}</span>` : '';
-      const badgeHtml = p.badge ? `<span class="card-tag">${p.badge}</span>` : '';
-      const ptsEarn = Math.max(5, Math.round((Number(p.price) / 100) * POINTS_PER_100));
+      const priceNum = Math.max(0, Number(p.price) || 0);
+      const discNum = Math.max(0, Number(p.discount) || 0);
+      const mrpHtml = (discNum > priceNum) ? `<span class="p-mrp">₹${discNum}</span>` : '';
+      const badgeHtml = p.badge ? `<span class="card-tag">${safeText(p.badge)}</span>` : '';
+      const ptsEarn = Math.max(5, Math.round((priceNum / 100) * POINTS_PER_100));
+      const cleanImg = safeUrl(p.img);
+      const safeId = safeText(p.id);
+      const safeName = safeText(p.name);
 
       return `
       <div class="card">
         ${badgeHtml}
         <div class="carousel-wrap">
           <span class="zoom-badge"><i class="fas fa-search-plus"></i></span>
-          <div class="carousel-track" id="track-${p.id}" onscroll="onTrackScroll('${p.id}', this)">
-            <div class="carousel-slide" onclick="openShoeZoom('${p.id}')">
-              <img src="${p.img}" onerror="this.src='https://via.placeholder.com/200?text=FOOTPRINT'">
+          <div class="carousel-track" id="track-${safeId}" onscroll="onTrackScroll('${safeId}', this)">
+            <div class="carousel-slide" onclick="openShoeZoom('${safeId}')">
+              <img src="${cleanImg}" onerror="this.src='https://via.placeholder.com/200?text=FOOTPRINT'">
             </div>
             <div class="carousel-slide">${miniChart}</div>
           </div>
           <div class="carousel-dots">
-            <span class="c-dot active" id="dot-${p.id}-0" onclick="slideCard('${p.id}', 0)"></span>
-            <span class="c-dot" id="dot-${p.id}-1" onclick="slideCard('${p.id}', 1)"></span>
-            <span class="swipe-hint" onclick="slideCard('${p.id}', 1)">Size Chart →</span>
+            <span class="c-dot active" id="dot-${safeId}-0" onclick="slideCard('${safeId}', 0)"></span>
+            <span class="c-dot" id="dot-${safeId}-1" onclick="slideCard('${safeId}', 1)"></span>
+            <span class="swipe-hint" onclick="slideCard('${safeId}', 1)">Size Chart →</span>
           </div>
         </div>
         <div class="card-body">
           <div class="stars">★★★★★</div>
-          <div class="p-name" onclick="openShoeZoom('${p.id}')">${p.name}</div>
+          <div class="p-name" onclick="openShoeZoom('${safeId}')">${safeName}</div>
           <div class="price-row">
-            <span class="p-price">₹${p.price}</span>
+            <span class="p-price">₹${priceNum}</span>
             ${mrpHtml}
           </div>
           <div class="pts-earn-badge"><i class="fas fa-crown"></i> +${ptsEarn} VIP Points</div>
@@ -909,10 +954,10 @@
             <span class="size-guide-link" onclick="openSizeModal()">Size Chart</span>
           </div>
           <div class="size-row">
-            ${sizes.map(s => `<span class="sz-pill ${selectedSizes[p.id] === s ? 'selected' : ''}" onclick="pickSize('${p.id}', '${s}', this)">${s}</span>`).join('')}
+            ${sizes.map(s => `<span class="sz-pill ${selectedSizes[p.id] === s ? 'selected' : ''}" onclick="pickSize('${safeId}', '${safeText(s)}', this)">${safeText(s)}</span>`).join('')}
           </div>
         </div>
-        <button class="add-btn ${outOfStock ? 'oos' : ''}" ${outOfStock ? 'disabled' : ''} onclick="addToCart('${p.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price})">
+        <button class="add-btn ${outOfStock ? 'oos' : ''}" ${outOfStock ? 'disabled' : ''} onclick="addToCart('${safeId}', '${encodeURIComponent(String(p.name || ''))}', ${priceNum})">
           <i class="fas fa-shopping-bag"></i> ${outOfStock ? 'OUT OF STOCK' : 'ADD TO BAG'}
         </button>
       </div>`;
@@ -929,17 +974,18 @@
   }
   setInterval(showSale, 18000);
 
-  window.addToCart = (id, name, price) => {
+  window.addToCart = (id, encodedName, price) => {
+    const decodedName = decodeURIComponent(encodedName || "");
     const size = selectedSizes[id] || "Standard";
-    cart.push({id, name, price, size});
+    cart.push({id, name: decodedName, price: Number(price) || 0, size});
     document.getElementById("cartBar").style.display = "block";
     document.getElementById("count").innerText = cart.length;
   };
 
   window.setPaymentMode = (mode) => {
-    paymentMode = mode;
-    document.getElementById("payUPI").classList.toggle("active", mode === "UPI");
-    document.getElementById("payCOD").classList.toggle("active", mode === "COD");
+    paymentMode = mode === 'COD' ? 'COD' : 'UPI';
+    document.getElementById("payUPI").classList.toggle("active", paymentMode === "UPI");
+    document.getElementById("payCOD").classList.toggle("active", paymentMode === "COD");
     renderCartModal();
   };
 
@@ -959,7 +1005,7 @@
   };
 
   function calculateBill() {
-    let subTotal = cart.reduce((sum, item) => sum + item.price, 0);
+    let subTotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
     const shipping = subTotal >= 499 ? 0 : 49;
     const upiDiscount = paymentMode === "UPI" ? 15 : 0;
     const grandTotal = Math.max(0, subTotal + shipping - upiDiscount);
@@ -967,28 +1013,47 @@
     return { subTotal, shipping, upiDiscount, grandTotal, earnedPoints };
   }
 
+  function updateUpiQrScanner(amount) {
+    const qrBox = document.getElementById("upiQrBox");
+    if (paymentMode !== "UPI" || amount <= 0) {
+      qrBox.style.display = "none";
+      return;
+    }
+    qrBox.style.display = "block";
+    const upiId = (chartMeta.upiId || "7003478789@ybl").trim();
+    const merchant = (chartMeta.merchantName || "FOOTPRINT Store").trim();
+    const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(merchant)}&am=${encodeURIComponent(amount)}&cu=INR`;
+    document.getElementById("upiDisplayId").innerText = upiId;
+    document.getElementById("upiPayAmount").innerText = `₹${amount}`;
+    document.getElementById("upiIntentLink").href = upiUri;
+    document.getElementById("upiQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(upiUri)}`;
+  }
+
   function renderCartModal() {
     document.getElementById("cartItemsList").innerHTML = cart.map((item, i) => `
       <div class="cart-item">
-        <div><b>${item.name}</b><br><span style="color:#6b7280; font-size:11px;">Size: ${item.size} &bull; ₹${item.price}</span></div>
+        <div><b>${safeText(item.name)}</b><br><span style="color:#6b7280; font-size:11px;">Size: ${safeText(item.size)} &bull; ₹${Number(item.price) || 0}</span></div>
         <i class="fas fa-trash-alt" style="color:var(--main); cursor:pointer; padding:6px;" onclick="removeCartItem(${i})"></i>
       </div>`).join('');
 
     const { subTotal, shipping, upiDiscount, grandTotal, earnedPoints } = calculateBill();
+    updateUpiQrScanner(grandTotal);
+
     document.getElementById("billSummary").innerHTML = `
       <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Item Total</span><b>₹${subTotal}</b></div>
       <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Delivery</span><b>${shipping === 0 ? '<span style="color:var(--green);">FREE</span>' : '₹' + shipping}</b></div>
       ${upiDiscount > 0 ? `<div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--green);"><span>UPI Instant Discount</span><b>-₹${upiDiscount}</b></div>` : ''}
-      <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:#b45309;"><span>VIP Points Earned</span><b>+${earnedPoints} Pts</b></div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:#b45309;"><span>VIP Points (On Delivery)</span><b>+${earnedPoints} Pts</b></div>
       <div style="display:flex; justify-content:space-between; font-size:14px; color:var(--dark); border-top:1px dashed #d1d5db; padding-top:6px;"><span>Grand Total</span><b>₹${grandTotal}</b></div>
     `;
   }
 
   window.checkout = async () => {
-    const cName = document.getElementById("custName").value.trim();
+    const cName = document.getElementById("custName").value.trim().slice(0, 80);
     const rawPhone = document.getElementById("custPhone").value.replace(/\D/g, '').slice(-10);
-    const cAddr = document.getElementById("custAddress").value.trim();
+    const cAddr = document.getElementById("custAddress").value.trim().slice(0, 220);
     if(!cName || rawPhone.length < 10 || !cAddr) { alert("Please enter your Name, 10-digit Mobile Number, and Address."); return; }
+    if(!cart.length) { alert("Your bag is empty."); return; }
 
     const btn = document.getElementById("placeOrderBtn");
     btn.disabled = true; btn.innerText = "Issuing VIP Card & Saving...";
@@ -1014,7 +1079,7 @@
       } else {
         await setDoc(cardRef, {
           cardNumber: vipCardNumber, name: cName, phone: rawPhone,
-          points: earnedPoints, ordersCount: 1,
+          points: earnedPoints, ordersCount: 1, freeClaimedCount: 0,
           issuedDate: new Date().toLocaleDateString('en-IN'), lastOrderDate: new Date().toLocaleDateString('en-IN')
         });
       }
@@ -1041,7 +1106,7 @@
     btn.disabled = false; btn.innerHTML = '<i class="fab fa-whatsapp"></i> PLACE ORDER & GET VIP POINTS';
     closeCart();
     await openLoyaltyModal();
-    window.open(`https://wa.me/917003478789?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/917003478789?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
   };
 
   window.filterBy = (cat, btn) => {
@@ -1052,12 +1117,13 @@
 
   window.handleSearch = () => {
     const q = document.getElementById("searchInput").value.toLowerCase();
-    render(masterData.filter(p => p.name.toLowerCase().includes(q)));
+    render(masterData.filter(p => String(p.name || '').toLowerCase().includes(q)));
   };
 
   let time = 18000;
   setInterval(() => {
     time--;
+    if(time < 0) time = 18000;
     let h = Math.floor(time / 3600);
     let m = Math.floor((time % 3600) / 60);
     let s = time % 60;
