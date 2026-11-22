@@ -84,7 +84,7 @@
 <div id="lockScreen">
   <i class="fas fa-shield-alt" style="font-size:38px; margin-bottom:10px; color:#f1c40f;"></i>
   <h3 style="margin:0 0 6px;">FOOTPRINT ADMIN SECURITY LOCK</h3>
-  <p style="font-size:11px; color:#cbd5e1; margin:0 0 12px;">Default PIN: 1234 (Change anytime in Settings)</p>
+  <p style="font-size:11px; color:#cbd5e1; margin:0 0 12px;">Default PIN: 8013 (Change anytime in Settings)</p>
   <input type="password" id="pinInput" maxlength="8" placeholder="••••">
   <button onclick="unlockAdmin()" style="width:190px; background:var(--success); color:white; border:none; font-weight:700; cursor:pointer;">UNLOCK PANEL</button>
   <div id="lockStatusMsg" style="font-size:11px; color:#fca5a5; margin-top:8px;"></div>
@@ -343,7 +343,7 @@
   };
 
   // PIN Security with Failed Attempt Cooldown
-  let activePin = localStorage.getItem('fp_custom_pin') || "1234";
+  let activePin = localStorage.getItem('fp_custom_pin') || "8013";
   let failedAttempts = 0;
   let lockUntil = 0;
 
