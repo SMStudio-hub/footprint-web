@@ -75,6 +75,12 @@
 
   .live-preview { width: 95px; height: 95px; object-fit: contain; background: #fafafa; border-radius: 10px; margin: 8px auto; display: none; border: 2px solid var(--blue); padding: 4px; }
   .gallery-btn { background: #eff6ff; border: 1.5px dashed var(--blue); color: var(--blue); cursor: pointer; font-size: 12.5px; font-weight: 700; height: 42px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 10px; }
+  .extra-gallery-btn { background: #f0fdf4; border: 1.5px dashed var(--success); color: #166534; cursor: pointer; font-size: 12px; font-weight: 700; height: 40px; margin: 6px 0; display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 10px; }
+  .extra-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .extra-thumb-card { position: relative; width: 68px; height: 68px; border-radius: 8px; border: 1px solid #cbd5e1; overflow: hidden; background: #fff; }
+  .extra-thumb-card img { width: 100%; height: 100%; object-fit: cover; }
+  .extra-del-btn { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; padding: 0; margin: 0; border-radius: 50%; background: rgba(220,38,38,0.9); color: #fff; border: none; font-size: 10px; line-height: 18px; text-align: center; cursor: pointer; }
+
   .log-row { display: flex; justify-content: space-between; font-size: 11px; padding: 7px 0; border-bottom: 1px solid #f1f1f1; color: #444; }
   label.mini-lbl { font-size: 10.5px; font-weight: 700; color: #555; display: block; margin-top: 6px; }
 </style>
@@ -198,15 +204,26 @@
       <label><input type="checkbox" class="sz-chk" value="UK 10"> UK 10</label>
     </div>
 
-    <label class="mini-lbl">8. Shoe Photo (Gallery se upload karein ya URL dalein) *</label>
+    <label class="mini-lbl">8. Main Shoe Photo (Gallery se upload karein ya URL dalein) *</label>
     <input type="file" id="prodFile" accept="image/*" style="display:none;">
     <div class="gallery-btn" id="prodUploadBtn" onclick="document.getElementById('prodFile').click()">
-      <i class="fas fa-cloud-upload-alt"></i> Tap to Upload Shoe Photo from Gallery
+      <i class="fas fa-cloud-upload-alt"></i> Tap to Upload Main Shoe Photo
     </div>
     <input type="text" id="imgUrl" placeholder="Auto-filled after upload (or paste direct image link)">
     <img id="prodPrev" class="live-preview">
 
-    <div class="grid-2" style="margin-top:8px;">
+    <label class="mini-lbl">9. Extra Photos (Side / Sole / Combo / Angle Views)</label>
+    <input type="file" id="extraProdFile" accept="image/*" multiple style="display:none;">
+    <div class="extra-gallery-btn" id="extraUploadBtn" onclick="document.getElementById('extraProdFile').click()">
+      <i class="fas fa-images"></i> Upload Extra Angle / Sole / Combo Photos
+    </div>
+    <div style="display:flex; gap:6px;">
+      <input type="text" id="extraImgInput" placeholder="Or paste extra photo link & click Add" style="margin:0;">
+      <button type="button" onclick="addExtraPhotoFromUrl()" style="width:82px; margin:0; background:#1e293b; color:#fff; border:none; font-weight:700; cursor:pointer;">+ Add</button>
+    </div>
+    <div class="extra-thumbs" id="extraThumbsBox"></div>
+
+    <div class="grid-2" style="margin-top:10px;">
       <button type="button" onclick="clearForm()" style="background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; font-weight:700; cursor:pointer;">Clear / Reset</button>
       <button class="btn-save" id="saveBtn" style="background:var(--success);">Publish Listing</button>
     </div>
@@ -237,7 +254,6 @@
 
 <!-- TAB 5: SETTINGS (SIZE CHART, UPI QR, ADMIN PIN, AD BANNER & VISITORS) -->
 <div class="tab-pane" id="pane-settings">
-  <!-- Smart Auto-Converting Size Chart & UPI QR -->
   <div class="box">
     <h2><span><i class="fas fa-ruler-combined" style="color:var(--accent);"></i> Smart Size Chart & UPI QR</span></h2>
     <p style="font-size:11px; color:#555; margin-top:-6px;">Sirf <b>Length in cm</b> edit kijiye—<b>UK & India, EU, aur USA</b> apne aap calculate ho jayenge!</p>
@@ -271,7 +287,6 @@
     <button class="btn-save" id="saveSizeChartBtn" style="background:var(--primary); margin-top:8px;">Save Size Chart & UPI QR</button>
   </div>
 
-  <!-- Admin Security PIN Updater -->
   <div class="box">
     <h2><span><i class="fas fa-key" style="color:var(--accent);"></i> Admin Security PIN</span></h2>
     <label class="mini-lbl">Set New 4-to-8 Digit Admin PIN</label>
@@ -279,7 +294,6 @@
     <button class="btn-save" id="saveAdminPinBtn" style="background:#1e293b;">Update Admin PIN</button>
   </div>
 
-  <!-- Ad Banner Manager -->
   <div class="box">
     <h2><span><i class="fas fa-bullhorn" style="color:#f39c12;"></i> Hero Slide 1 Ad (Clicks: <span id="adClicks">0</span>)</span></h2>
     <div class="ad-toggle">
@@ -299,7 +313,6 @@
     <button class="btn-save" id="saveAdBtn">Push Ad to Live Site</button>
   </div>
 
-  <!-- Visitor Analytics Box -->
   <div class="box">
     <h2>
       <span><i class="fas fa-chart-line" style="color:#9b59b6;"></i> Website Visitor Details</span>
@@ -342,7 +355,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // PIN Security with Failed Attempt Cooldown
   let activePin = localStorage.getItem('fp_custom_pin') || "8013";
   let failedAttempts = 0;
   let lockUntil = 0;
@@ -406,7 +418,43 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Fast Image Compression to DataURL (Zero Storage Hang)
+  // Extra Photos State for Add/Edit Listing
+  let draftExtraImages = [];
+
+  function renderExtraThumbs() {
+    const box = document.getElementById('extraThumbsBox');
+    if (!draftExtraImages.length) {
+      box.innerHTML = '<div style="font-size:10.5px; color:#6b7280;">No extra photos added yet.</div>';
+      return;
+    }
+    box.innerHTML = draftExtraImages.map((url, idx) => `
+      <div class="extra-thumb-card">
+        <img src="${safeUrl(url)}" onerror="this.src='https://via.placeholder.com/68'">
+        <button type="button" class="extra-del-btn" onclick="removeExtraPhoto(${idx})">&times;</button>
+      </div>
+    `).join('');
+  }
+  renderExtraThumbs();
+
+  window.removeExtraPhoto = (idx) => {
+    draftExtraImages.splice(idx, 1);
+    renderExtraThumbs();
+  };
+
+  window.addExtraPhotoFromUrl = () => {
+    const input = document.getElementById('extraImgInput');
+    const url = input.value.trim();
+    if (!url) return;
+    if (draftExtraImages.length >= 6) {
+      alert("Maximum 6 extra photos allowed per product.");
+      return;
+    }
+    draftExtraImages.push(url);
+    input.value = '';
+    renderExtraThumbs();
+  };
+
+  // Fast Image Compression to DataURL
   function compressToDataURL(file, maxWidth = 450, quality = 0.78) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -457,6 +505,28 @@
   document.getElementById('adFile').onchange = (e) => handleFileUpload(e.target.files[0], 'adImg', 'adPrev', 'adUploadBtn');
   document.getElementById('prodFile').onchange = (e) => handleFileUpload(e.target.files[0], 'imgUrl', 'prodPrev', 'prodUploadBtn');
   document.getElementById('imgUrl').oninput = (e) => window.showPrev(e.target.value.trim(), 'prodPrev');
+
+  document.getElementById('extraProdFile').onchange = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    const btn = document.getElementById('extraUploadBtn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Compressing Extra Photos...';
+    try {
+      for (const f of files) {
+        if (draftExtraImages.length >= 6) break;
+        const compressed = await compressToDataURL(f, 450, 0.75);
+        draftExtraImages.push(compressed);
+      }
+      renderExtraThumbs();
+      btn.innerHTML = '<i class="fas fa-check"></i> Extra Photos Added!';
+      setTimeout(() => btn.innerHTML = orig, 2000);
+    } catch (err) {
+      alert("Extra photo upload error: " + err.message);
+      btn.innerHTML = orig;
+    }
+    e.target.value = '';
+  };
 
   // VIP Loyalty Cards
   onSnapshot(collection(db, "loyalty_cards"), (snap) => {
@@ -672,12 +742,13 @@
       const qty = p.stock !== undefined ? Number(p.stock) : 1;
       totalStock += qty;
       const safeId = safeText(d.id);
+      const extraCount = Array.isArray(p.extraImages) ? p.extraImages.length : 0;
       return `
       <div class="prod-item">
         <img src="${safeUrl(p.img)}" onerror="this.src='https://via.placeholder.com/50'">
         <div style="flex-grow:1; font-size:12px;">
           <b>${safeText(p.name)}</b><br>
-          <span style="color:var(--accent); font-weight:700;">₹${Number(p.price) || 0}</span> | ${safeText(p.cat)}
+          <span style="color:var(--accent); font-weight:700;">₹${Number(p.price) || 0}</span> | ${safeText(p.cat)} ${extraCount > 0 ? `<span style="font-size:10px; color:#15803d; font-weight:700;">(+${extraCount} photos)</span>` : ''}
           <div class="qty-ctrl">
             <span>Stock: <b>${qty}</b></span>
             <button class="qty-btn" onclick="window.changeQty('${safeId}', -1)">-</button>
@@ -702,12 +773,15 @@
     document.getElementById('discount').value = '';
     document.getElementById('stock').value = '';
     document.getElementById('imgUrl').value = '';
+    document.getElementById('extraImgInput').value = '';
     document.getElementById('badgeTag').value = '50% OFF';
     document.getElementById('prodPrev').style.display = 'none';
     document.getElementById('saveBtn').innerText = "Publish Listing";
     const badge = document.getElementById('listingModeBadge');
     badge.innerText = "NEW LISTING";
     badge.classList.remove('edit');
+    draftExtraImages = [];
+    renderExtraThumbs();
   };
 
   window.startNewListing = () => {
@@ -730,6 +804,8 @@
     document.getElementById('badgeTag').value = p.badge || '';
     const savedSizes = Array.isArray(p.sizes) ? p.sizes : [];
     document.querySelectorAll('.sz-chk').forEach(chk => { chk.checked = savedSizes.includes(chk.value); });
+    draftExtraImages = Array.isArray(p.extraImages) ? [...p.extraImages] : [];
+    renderExtraThumbs();
     document.getElementById('saveBtn').innerText = "Update Listing";
     const badge = document.getElementById('listingModeBadge');
     badge.innerText = "EDITING PRODUCT";
@@ -752,16 +828,17 @@
       discount: Math.max(0, Number(document.getElementById('discount').value) || 0),
       stock: Math.max(0, Number(document.getElementById('stock').value) || 0),
       img: document.getElementById('imgUrl').value.trim(),
+      extraImages: draftExtraImages,
       cat: document.getElementById('setCat').value,
       badge: document.getElementById('badgeTag').value,
       sizes: selectedSizes.length ? selectedSizes : ["UK 7", "UK 8", "UK 9"]
     };
     if(!data.name || isNaN(priceVal) || priceVal <= 0) { alert("Valid Product Name and Price (> 0) are required!"); return; }
-    if(!data.img) { alert("Please upload a shoe photo or paste an image URL!"); return; }
+    if(!data.img) { alert("Please upload a main shoe photo or paste an image URL!"); return; }
 
     if(id) await updateDoc(doc(db, "products", id), data);
     else await addDoc(collection(db, "products"), data);
-    alert(id ? "Listing Updated!" : "New Listing Published Live!");
+    alert(id ? "Listing & Extra Photos Updated!" : "New Listing Published Live!");
     window.clearForm();
     window.switchAdminTab('stock');
   };
