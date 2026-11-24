@@ -69,6 +69,7 @@
 
   .order-card { background: #fafafa; border: 1px solid #e5e7eb; border-left: 4px solid var(--blue); border-radius: 10px; padding: 12px; margin-bottom: 10px; font-size: 12px; }
   .order-card.delivered { border-left-color: var(--success); background: #f0fdf4; }
+  .wa-notify-link { display: inline-flex; align-items: center; gap: 4px; background: #25d366; color: #fff; text-decoration: none; font-size: 10.5px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
 
   .vip-row { background: #18181b; color: white; border: 1px solid var(--gold); border-radius: 12px; padding: 11px 12px; margin-bottom: 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
   .vip-mini-btn { width: auto; height: 26px; padding: 0 8px; margin: 0; font-size: 10px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer; }
@@ -90,13 +91,12 @@
 <div id="lockScreen">
   <i class="fas fa-shield-alt" style="font-size:38px; margin-bottom:10px; color:#f1c40f;"></i>
   <h3 style="margin:0 0 6px;">FOOTPRINT ADMIN SECURITY LOCK</h3>
-  <p style="font-size:11px; color:#cbd5e1; margin:0 0 12px;">Default PIN: 8013 (Change anytime in Settings)</p>
+  <p style="font-size:11px; color:#cbd5e1; margin:0 0 12px;">Default PIN: 1234 (Change anytime in Settings)</p>
   <input type="password" id="pinInput" maxlength="8" placeholder="••••">
   <button onclick="unlockAdmin()" style="width:190px; background:var(--success); color:white; border:none; font-weight:700; cursor:pointer;">UNLOCK PANEL</button>
   <div id="lockStatusMsg" style="font-size:11px; color:#fca5a5; margin-top:8px;"></div>
 </div>
 
-<!-- Top Brand Bar -->
 <div class="admin-header">
   <div class="admin-title">FOOT<span>PRINT</span> ADMIN</div>
   <div class="header-btns">
@@ -105,7 +105,6 @@
   </div>
 </div>
 
-<!-- 5-Tab Navigation Bar -->
 <div class="tab-bar">
   <button class="tab-btn active" id="tbtn-orders" onclick="switchAdminTab('orders')">
     <i class="fas fa-shopping-bag"></i>
@@ -130,7 +129,6 @@
   </button>
 </div>
 
-<!-- TAB 1: ORDERS & PROFIT -->
 <div class="tab-pane active" id="pane-orders">
   <div class="stats-grid">
     <div class="stat-card"><h3>Stock Left</h3><div class="value" id="totalStockCount">0</div></div>
@@ -147,7 +145,6 @@
   </div>
 </div>
 
-<!-- TAB 2: ADD / EDIT PRODUCT LISTING -->
 <div class="tab-pane" id="pane-listing">
   <div class="box" id="listingBox">
     <h2>
@@ -230,7 +227,6 @@
   </div>
 </div>
 
-<!-- TAB 3: LIVE INVENTORY -->
 <div class="tab-pane" id="pane-stock">
   <div class="box">
     <h2>
@@ -241,7 +237,6 @@
   </div>
 </div>
 
-<!-- TAB 4: VIP LOYALTY CARDS -->
 <div class="tab-pane" id="pane-vip">
   <div class="box">
     <h2>
@@ -252,7 +247,6 @@
   </div>
 </div>
 
-<!-- TAB 5: SETTINGS (SIZE CHART, UPI QR, ADMIN PIN, AD BANNER & VISITORS) -->
 <div class="tab-pane" id="pane-settings">
   <div class="box">
     <h2><span><i class="fas fa-ruler-combined" style="color:var(--accent);"></i> Smart Size Chart & UPI QR</span></h2>
@@ -355,7 +349,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  let activePin = localStorage.getItem('fp_custom_pin') || "8013";
+  let activePin = localStorage.getItem('fp_custom_pin') || "1234";
   let failedAttempts = 0;
   let lockUntil = 0;
 
@@ -418,7 +412,6 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Extra Photos State for Add/Edit Listing
   let draftExtraImages = [];
 
   function renderExtraThumbs() {
@@ -454,7 +447,6 @@
     renderExtraThumbs();
   };
 
-  // Fast Image Compression to DataURL
   function compressToDataURL(file, maxWidth = 450, quality = 0.78) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -528,7 +520,6 @@
     e.target.value = '';
   };
 
-  // VIP Loyalty Cards
   onSnapshot(collection(db, "loyalty_cards"), (snap) => {
     document.getElementById("vipMemberCount").innerText = snap.size;
     const list = document.getElementById("vipMembersList");
@@ -540,12 +531,15 @@
       const c = d.data();
       const pts = Number(c.points || 0);
       const safeDocId = safeText(d.id);
+      const phoneClean = String(c.phone || '').replace(/\D/g, '').slice(-10);
+      const waCardMsg = `👑 *FOOTPRINT VIP CARD UPDATE*\nCard: *${c.cardNumber}*\nMember: *${c.name}*\nCurrent Points: *${pts} / 500 Pts*\n500 Points = 1 FREE Footwear!`;
       return `
       <div class="vip-row">
         <div>
           <div style="font-weight:800; color:var(--gold); font-size:11px;">${safeText(c.cardNumber)} &bull; ${safeText(c.phone)}</div>
           <div style="font-weight:700; font-size:13px;">${safeText(c.name)}</div>
-          <div style="font-size:11px; color:#d1d5db;">Points: <b style="color:#fde047;">${pts} / 500</b> | Orders: ${Number(c.ordersCount || 1)} | Free Claimed: ${Number(c.freeClaimedCount || 0)}</div>
+          <div style="font-size:11px; color:#d1d5db;">Points: <b style="color:#fde047;">${pts} / 500</b> | Orders: ${Number(c.ordersCount || 1)}</div>
+          ${phoneClean.length === 10 ? `<a href="https://wa.me/91${phoneClean}?text=${encodeURIComponent(waCardMsg)}" target="_blank" rel="noopener noreferrer" class="wa-notify-link" style="margin-top:5px;"><i class="fab fa-whatsapp"></i> WhatsApp Card</a>` : ''}
         </div>
         <div style="display:flex; flex-direction:column; gap:4px;">
           <button class="vip-mini-btn" style="background:var(--success); color:white;" onclick="window.adjustVipPoints('${safeDocId}', 50)">+50 Pts</button>
@@ -559,7 +553,6 @@
     await updateDoc(doc(db, "loyalty_cards", phoneId), { points: increment(delta) });
   };
 
-  // Auto-Convert Size Matrix
   let sizeMatrix = [
     { cm: "23.40-24.10", uk: "5", eu: "39", usa: "5.5" },
     { cm: "24.20-24.90", uk: "6", eu: "40", usa: "6.5" },
@@ -623,7 +616,6 @@
     alert("Size Chart, UPI QR & Conversions Updated on Live Website!");
   };
 
-  // Live Orders & Profit
   let cachedOrders = [];
   function renderOrders() {
     const list = document.getElementById('ordersList');
@@ -640,6 +632,8 @@
           totalDeliveredSales += Number(o.grandTotal || 0);
           totalDeliveredItems += (Array.isArray(o.items) ? o.items.length : 0);
         }
+        const phoneClean = String(o.customerPhone || '').replace(/\D/g, '').slice(-10);
+        const waCustMsg = `Hello ${o.customerName}! FootPrint Order *#${o.orderId}* status is *${o.status}* (Amount: ₹${Number(o.grandTotal) || 0}). VIP Card: ${o.vipCardNumber || ""}`;
         return `
         <div class="order-card ${o.status === 'Delivered' ? 'delivered' : ''}">
           <div style="display:flex; justify-content:space-between;">
@@ -647,10 +641,11 @@
             <span style="font-weight:800; color:var(--accent);">₹${Number(o.grandTotal) || 0} (${safeText(o.paymentMode)})</span>
           </div>
           <div style="color:#555; margin:3px 0;"><i class="fas fa-phone"></i> ${safeText(o.customerPhone)} | ${safeText(o.address)}</div>
+          ${o.paymentRef ? `<div style="color:#15803d; font-size:11px; font-weight:700;"><i class="fas fa-receipt"></i> Payment / UTR: ${safeText(o.paymentRef)}</div>` : ''}
           ${o.vipCardNumber ? `<div style="color:#b45309; font-size:11px; font-weight:700;"><i class="fas fa-crown"></i> ${safeText(o.vipCardNumber)} (+${Number(o.earnedPoints) || 0} Pts)</div>` : ''}
           <div style="color:#111; font-weight:600; margin:4px 0;">Items: ${itemsSummary}</div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-            <span style="font-size:10px; color:#777;">${safeText(o.date)}</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; gap:6px;">
+            ${phoneClean.length === 10 ? `<a href="https://wa.me/91${phoneClean}?text=${encodeURIComponent(waCustMsg)}" target="_blank" rel="noopener noreferrer" class="wa-notify-link"><i class="fab fa-whatsapp"></i> Notify</a>` : `<span style="font-size:10px; color:#777;">${safeText(o.date)}</span>`}
             <select onchange="window.updateOrderStatus('${safeText(o.docId)}', this.value)" style="width:120px; height:28px; font-size:11px; margin:0; padding:0 6px;">
               <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
               <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
@@ -680,7 +675,6 @@
     await updateDoc(doc(db, "orders", docId), { status: newStatus });
   };
 
-  // Visitor Analytics
   onSnapshot(doc(db, "analytics", "visitors"), (s) => {
     if(s.exists()) {
       const d = s.data();
@@ -705,7 +699,6 @@
     if(confirm("Reset visitor counts?")) await setDoc(doc(db, "analytics", "visitors"), { totalVisits: 0, mobileVisits: 0, desktopVisits: 0, lastVisit: "Reset" });
   };
 
-  // Ad Banner
   document.getElementById('saveAdBtn').onclick = async () => {
     await setDoc(doc(db, "settings", "appearance"), {
       showAdBanner: document.getElementById('showAdBanner').checked,
@@ -732,7 +725,6 @@
     }
   });
 
-  // Products Inventory
   onSnapshot(collection(db, "products"), (snap) => {
     document.getElementById('totalProds').innerText = snap.size;
     let totalStock = 0;
